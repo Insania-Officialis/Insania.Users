@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Insania.Shared.Models" Version="1.0.1" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.24" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Insania.Users.Entities\Insania.Users.Entities.csproj" />
-    <ProjectReference Include="..\Insania.Users.Models\Insania.Users.Models.csproj" />
+    <ProjectReference Include="..\Insania.Users.Database\Insania.Users.Database.csproj" />
   </ItemGroup>
 
 </Project>
