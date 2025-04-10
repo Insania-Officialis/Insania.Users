@@ -1,0 +1,1 @@
+create schema if not exists "insania_users";

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Insania.Users.Contracts\Insania.Users.Contracts.csproj" />
+    <ProjectReference Include="..\Insania.Users.DataAccess\Insania.Users.DataAccess.csproj" />
+    <ProjectReference Include="..\Insania.Users.Entities\Insania.Users.Entities.csproj" />
+    <ProjectReference Include="..\Insania.Users.Messages\Insania.Users.Messages.csproj" />
+    <ProjectReference Include="..\Insania.Users.Models\Insania.Users.Models.csproj" />
+  </ItemGroup>
+
+</Project>
