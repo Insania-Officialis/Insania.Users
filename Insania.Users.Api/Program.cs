@@ -15,10 +15,11 @@ using Insania.Shared.Contracts.Services;
 using Insania.Shared.Services;
 
 using Insania.Users.BusinessLogic;
+using Insania.Users.Database.Contexts;
 using Insania.Users.Messages;
 using Insania.Users.Middleware;
 using Insania.Users.Models.Mapper;
-using Insania.Users.Database.Contexts;
+using Insania.Users.Models.Settings;
 
 //Создания экземпляра постройки веб-приложения
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -30,9 +31,9 @@ IServiceCollection services = builder.Services;
 ConfigurationManager configuration = builder.Configuration;
 
 //Введение переменных для токена
-var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["TokenOptions:Key"]!));
-var issuer = configuration["TokenOptions:Issuer"];
-var audience = configuration["TokenOptions:Audience"];
+var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["TokenSettings:Key"]!));
+var issuer = configuration["TokenSettings:Issuer"];
+var audience = configuration["TokenSettings:Audience"];
 
 //Добавление параметров авторизации
 services
@@ -68,6 +69,10 @@ services
             ValidateIssuerSigningKey = true,
         };
     });
+
+//Добавление параметров токенов
+IConfigurationSection? tokenSettings = configuration.GetSection("TokenSettings");
+services.Configure<TokenSettings>(tokenSettings);
 
 //Внедрение зависимостей сервисов
 services.AddSingleton(_ => configuration); //конфигурация
