@@ -24,12 +24,12 @@ COPY ["/api/Insania.Users/Insania.Users.Middleware/Insania.Users.Middleware.cspr
 RUN dotnet restore "./Insania.Users.Api/Insania.Users.Api.csproj"
 COPY . .
 WORKDIR "/src/Insania.Users.Api"
-RUN dotnet build "./Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
 FROM base AS final
