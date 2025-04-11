@@ -7,9 +7,9 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
 ARG BUILD_CONFIGURATION=Release
 COPY ["/api/Insania.Users/Insania.Users.Api/Insania.Users.Api.csproj", "Insania.Users.Api/"]
 COPY ["/api/Insania.Users/Insania.Users.BusinessLogic/Insania.Users.BusinessLogic.csproj", "Insania.Users.BusinessLogic/"]
