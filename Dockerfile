@@ -23,6 +23,7 @@ COPY ["/api/Insania.Users/Insania.Users.Messages/Insania.Users.Messages.csproj",
 COPY ["/api/Insania.Users/Insania.Users.Middleware/Insania.Users.Middleware.csproj", "Insania.Users.Middleware/"]
 RUN dotnet restore "./Insania.Users.Api/Insania.Users.Api.csproj"
 COPY . .
+COPY . /.
 WORKDIR "/src/Insania.Users.Api"
 RUN dotnet build "Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
