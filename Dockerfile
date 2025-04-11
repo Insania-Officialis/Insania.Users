@@ -11,7 +11,6 @@ EXPOSE 8081
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
 COPY ["/api/Insania.Users/Insania.Users.Api/Insania.Users.Api.csproj", "Insania.Users.Api/"]
 COPY ["/api/Insania.Users/Insania.Users.BusinessLogic/Insania.Users.BusinessLogic.csproj", "Insania.Users.BusinessLogic/"]
 COPY ["/api/Insania.Users/Insania.Users.Contracts/Insania.Users.Contracts.csproj", "Insania.Users.Contracts/"]
@@ -22,8 +21,8 @@ COPY ["/api/Insania.Users/Insania.Users.Database/Insania.Users.Database.csproj",
 COPY ["/api/Insania.Users/Insania.Users.Messages/Insania.Users.Messages.csproj", "Insania.Users.Messages/"]
 COPY ["/api/Insania.Users/Insania.Users.Middleware/Insania.Users.Middleware.csproj", "Insania.Users.Middleware/"]
 RUN dotnet restore "./Insania.Users.Api/Insania.Users.Api.csproj"
+WORKDIR /src
 COPY . .
-COPY . /.
 WORKDIR "/src/Insania.Users.Api"
 RUN dotnet build "Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
