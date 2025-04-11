@@ -12,15 +12,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Insania.Users.Api/Insania.Users.Api.csproj", "Insania.Users.Api/"]
-COPY ["Insania.Users.BusinessLogic/Insania.Users.BusinessLogic.csproj", "Insania.Users.BusinessLogic/"]
-COPY ["Insania.Users.Contracts/Insania.Users.Contracts.csproj", "Insania.Users.Contracts/"]
-COPY ["Insania.Users.Entities/Insania.Users.Entities.csproj", "Insania.Users.Entities/"]
-COPY ["Insania.Users.Models/Insania.Users.Models.csproj", "Insania.Users.Models/"]
-COPY ["Insania.Users.DataAccess/Insania.Users.DataAccess.csproj", "Insania.Users.DataAccess/"]
-COPY ["Insania.Users.Database/Insania.Users.Database.csproj", "Insania.Users.Database/"]
-COPY ["Insania.Users.Messages/Insania.Users.Messages.csproj", "Insania.Users.Messages/"]
-COPY ["Insania.Users.Middleware/Insania.Users.Middleware.csproj", "Insania.Users.Middleware/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Api/Insania.Users.Api.csproj", "Insania.Users.Api/"]
+COPY ["/app/api/Insania.Users/Insania.Users.BusinessLogic/Insania.Users.BusinessLogic.csproj", "Insania.Users.BusinessLogic/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Contracts/Insania.Users.Contracts.csproj", "Insania.Users.Contracts/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Entities/Insania.Users.Entities.csproj", "Insania.Users.Entities/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Models/Insania.Users.Models.csproj", "Insania.Users.Models/"]
+COPY ["/app/api/Insania.Users/Insania.Users.DataAccess/Insania.Users.DataAccess.csproj", "Insania.Users.DataAccess/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Database/Insania.Users.Database.csproj", "Insania.Users.Database/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Messages/Insania.Users.Messages.csproj", "Insania.Users.Messages/"]
+COPY ["/app/api/Insania.Users/Insania.Users.Middleware/Insania.Users.Middleware.csproj", "Insania.Users.Middleware/"]
 RUN dotnet restore "./Insania.Users.Api/Insania.Users.Api.csproj"
 COPY . .
 WORKDIR "/src/Insania.Users.Api"
