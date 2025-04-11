@@ -63,10 +63,5 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         //Инициализация данных, если не установлен признак инициализации структуры
         IOptions<InitializationDataSettings> initializeDataSettings = serviceProvider.GetRequiredService<IOptions<InitializationDataSettings>>();
         await serviceProvider.GetRequiredService<IInitializationDAO>().Initialize();
-        if (initializeDataSettings.Value.InitStructure == true)
-        {
-            await serviceProvider.GetRequiredService<UsersContext>().Database.MigrateAsync();
-            await serviceProvider.GetRequiredService<LogsApiUsersContext>().Database.MigrateAsync();
-        }
     }
 );

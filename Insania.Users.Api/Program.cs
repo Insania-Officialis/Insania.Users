@@ -160,6 +160,9 @@ services.AddAutoMapper(typeof(UsersMappingProfile));
 //Построение веб-приложения
 WebApplication app = builder.Build();
 
+//Добавление параметров конвейера запросов
+app.UseMiddleware<LoggingMiddleware>();
+
 //Подключение маршрутизации
 app.UseRouting();
 

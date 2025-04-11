@@ -111,6 +111,10 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 return;
             }
 
+            //Накат миграций
+            await _usersContext.Database.MigrateAsync();
+            await _logsApiUsersContext.Database.MigrateAsync();
+
             //Проверки
             if (string.IsNullOrWhiteSpace(_settings.Value.ScriptsPath)) throw new Exception(ErrorMessages.EmptyScriptsPath);
 
