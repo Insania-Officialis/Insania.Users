@@ -12,17 +12,9 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Insania.Users/Insania.Users.Api/Insania.Users.Api.csproj", "Insania.Users.Api/"]
-COPY ["Insania.Users/Insania.Users.BusinessLogic/Insania.Users.BusinessLogic.csproj", "Insania.Users.BusinessLogic/"]
-COPY ["Insania.Users/Insania.Users.Contracts/Insania.Users.Contracts.csproj", "Insania.Users.Contracts/"]
-COPY ["Insania.Users/Insania.Users.Entities/Insania.Users.Entities.csproj", "Insania.Users.Entities/"]
-COPY ["Insania.Users/Insania.Users.Models/Insania.Users.Models.csproj", "Insania.Users.Models/"]
-COPY ["Insania.Users/Insania.Users.DataAccess/Insania.Users.DataAccess.csproj", "Insania.Users.DataAccess/"]
-COPY ["Insania.Users/Insania.Users.Database/Insania.Users.Database.csproj", "Insania.Users.Database/"]
-COPY ["Insania.Users/Insania.Users.Messages/Insania.Users.Messages.csproj", "Insania.Users.Messages/"]
-COPY ["Insania.Users/Insania.Users.Middleware/Insania.Users.Middleware.csproj", "Insania.Users.Middleware/"]
+COPY ["Insania.Users", ""]
 RUN dotnet restore "./Insania.Users.Api/Insania.Users.Api.csproj"
-COPY . .
+COPY ./ .
 WORKDIR "/src/Insania.Users.Api"
 RUN dotnet build "./Insania.Users.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
