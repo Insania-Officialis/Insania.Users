@@ -7,6 +7,7 @@ using Insania.Users.Database.Contexts;
 using Insania.Users.Entities;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Identity.Data;
+using System.Text.Json.Nodes;
 
 namespace Insania.Users.Middleware;
 
@@ -55,7 +56,7 @@ public class LoggingMiddleware(RequestDelegate next)
         var success = _successCodes.Any(x => x == context.Response.StatusCode.ToString());
 
         //Объявление переменной ответа
-        string response = string.Empty;
+        string? response = null;
 
         //Проверка исключений
         if (!_exceptions.Any(x => method.ToString().Contains(x)))
