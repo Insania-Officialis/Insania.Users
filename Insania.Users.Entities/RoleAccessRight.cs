@@ -47,7 +47,6 @@ public class RoleAccessRight : EntityAccessRight
     {
         RoleEntity = role;
         RoleId = role.Id;
-
     }
     #endregion
 

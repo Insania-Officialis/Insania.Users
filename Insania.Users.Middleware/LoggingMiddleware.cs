@@ -5,9 +5,6 @@ using Insania.Shared.Models.Requests.Logs;
 
 using Insania.Users.Database.Contexts;
 using Insania.Users.Entities;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Identity.Data;
-using System.Text.Json.Nodes;
 
 namespace Insania.Users.Middleware;
 

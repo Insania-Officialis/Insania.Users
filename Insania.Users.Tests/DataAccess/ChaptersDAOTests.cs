@@ -7,16 +7,16 @@ using Insania.Users.Tests.Base;
 namespace Insania.Users.Tests.DataAccess;
 
 /// <summary>
-/// Тесты сервиса работы с данными прав доступа ролей
+/// Тесты сервиса работы с данными капитулов
 /// </summary>
 [TestFixture]
-public class RolesAccessRightsDAOTests : BaseTest
+public class ChaptersDAOTests : BaseTest
 {
     #region Поля
     /// <summary>
-    /// Сервис работы с данными прав доступа ролей
+    /// Сервис работы с данными капитулов
     /// </summary>
-    private IRolesAccessRightsDAO RolesAccessRightsDAO { get; set; }
+    private IChaptersDAO ChaptersDAO { get; set; }
     #endregion
 
     #region Общие методы
@@ -27,7 +27,7 @@ public class RolesAccessRightsDAOTests : BaseTest
     public void Setup()
     {
         //Получение зависимости
-        RolesAccessRightsDAO = ServiceProvider.GetRequiredService<IRolesAccessRightsDAO>();
+        ChaptersDAO = ServiceProvider.GetRequiredService<IChaptersDAO>();
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class RolesAccessRightsDAOTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения списка прав доступа ролей
+    /// Тест метода получения списка капитулов
     /// </summary>
     [Test]
     public async Task GetListTest()
@@ -50,11 +50,11 @@ public class RolesAccessRightsDAOTests : BaseTest
         try
         {
             //Получение результата
-            List<RoleAccessRight>? result = await RolesAccessRightsDAO.GetList();
+            List<Chapter>? result = await ChaptersDAO.GetList();
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);
-            //Assert.That(result, Is.Not.Empty);
+            Assert.That(result, Is.Not.Empty);
         }
         catch (Exception)
         {

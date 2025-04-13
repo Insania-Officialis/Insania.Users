@@ -3,6 +3,7 @@ using System;
 using Insania.Users.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Users.Database.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20250413144652_Init_1")]
+    partial class Init_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -398,65 +401,6 @@ namespace Insania.Users.Database.Migrations
                     b.ToTable("u_positions_titles", "insania_users", t =>
                         {
                             t.HasComment("Звания должностей");
-                        });
-                });
-
-            modelBuilder.Entity("Insania.Users.Entities.PositionTitleAccessRight", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id")
-                        .HasComment("Первичный ключ таблицы");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AccessRightId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("access_right_id")
-                        .HasComment("Идентификатор права доступа");
-
-                    b.Property<DateTime>("DateCreate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_create")
-                        .HasComment("Дата создания");
-
-                    b.Property<DateTime?>("DateDeleted")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_deleted")
-                        .HasComment("Дата удаления");
-
-                    b.Property<DateTime>("DateUpdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_update")
-                        .HasComment("Дата обновления");
-
-                    b.Property<long>("PositionTitleId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("position_title_id")
-                        .HasComment("Идентификатор звания должности");
-
-                    b.Property<string>("UsernameCreate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_create")
-                        .HasComment("Логин пользователя, создавшего");
-
-                    b.Property<string>("UsernameUpdate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_update")
-                        .HasComment("Логин пользователя, обновившего");
-
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("AccessRightId", "PositionTitleId");
-
-                    b.HasIndex("PositionTitleId");
-
-                    b.ToTable("u_positions_titles_access_rights", "insania_users", t =>
-                        {
-                            t.HasComment("Права доступ званий должностей");
                         });
                 });
 
@@ -866,25 +810,6 @@ namespace Insania.Users.Database.Migrations
                     b.Navigation("PositionEntity");
 
                     b.Navigation("TitleEntity");
-                });
-
-            modelBuilder.Entity("Insania.Users.Entities.PositionTitleAccessRight", b =>
-                {
-                    b.HasOne("Insania.Users.Entities.AccessRight", "AccessRightEntity")
-                        .WithMany()
-                        .HasForeignKey("AccessRightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Insania.Users.Entities.PositionTitle", "PositionTitleEntity")
-                        .WithMany()
-                        .HasForeignKey("PositionTitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccessRightEntity");
-
-                    b.Navigation("PositionTitleEntity");
                 });
 
             modelBuilder.Entity("Insania.Users.Entities.RoleAccessRight", b =>

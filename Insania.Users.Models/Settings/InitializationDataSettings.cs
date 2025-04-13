@@ -63,6 +63,36 @@ public class InitializationDataSettingsIncludeTables
     /// Роли пользователей
     /// </summary>
     public bool? UsersRoles { get; set; }
+
+    /// <summary>
+    /// Должности
+    /// </summary>
+    public bool? Positions { get; set; }
+
+    /// <summary>
+    /// Звания
+    /// </summary>
+    public bool? Titles { get; set; }
+
+    /// <summary>
+    /// Звания должностей
+    /// </summary>
+    public bool? PositionsTitles { get; set; }
+
+    /// <summary>
+    /// Администраторы
+    /// </summary>
+    public bool? Administrators { get; set; }
+
+    /// <summary>
+    /// Капитулы
+    /// </summary>
+    public bool? Chapters { get; set; }
+
+    /// <summary>
+    /// Права доступа званий должностей
+    /// </summary>
+    public bool? PositionsTitlesAccessRights { get; set; }
 }
 
 /// <summary>

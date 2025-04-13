@@ -9,17 +9,17 @@ using Insania.Users.Messages;
 namespace Insania.Users.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными прав доступа
+/// Сервис работы с данными званий
 /// </summary>
-/// <param cref="ILogger{AccessRightsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{TitlesDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="UsersContext" name="context">Контекст базы данных пользователей</param>
-public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext context) : IAccessRightsDAO
+public class TitlesDAO(ILogger<TitlesDAO> logger, UsersContext context) : ITitlesDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<AccessRightsDAO> _logger = logger;
+    private readonly ILogger<TitlesDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных пользователей
@@ -29,19 +29,19 @@ public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext conte
 
     #region Методы
     /// <summary>
-    /// Метод получения списка прав доступа
+    /// Метод получения списка званий
     /// </summary>
-    /// <returns cref="List{AccessRight}">Список прав доступа</returns>
+    /// <returns cref="List{Title}">Список званий</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<AccessRight>> GetList()
+    public async Task<List<Title>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListAccessRightsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListTitlesMethod);
 
             //Получение данных из бд
-            List<AccessRight> data = await _context.AccessRights.Where(x => x.DateDeleted == null).ToListAsync();
+            List<Title> data = await _context.Titles.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;

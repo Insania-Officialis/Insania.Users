@@ -58,6 +58,36 @@ public class UsersContext : DbContext
     /// Игроки
     /// </summary>
     public virtual DbSet<Player> Players { get; set; }
+
+    /// <summary>
+    /// Должности
+    /// </summary>
+    public virtual DbSet<Position> Positions { get; set; }
+
+    /// <summary>
+    /// Звания
+    /// </summary>
+    public virtual DbSet<Title> Titles { get; set; }
+
+    /// <summary>
+    /// Звания должностей
+    /// </summary>
+    public virtual DbSet<PositionTitle> PositionsTitles { get; set; }
+
+    /// <summary>
+    /// Администраторы
+    /// </summary>
+    public virtual DbSet<Administrator> Administrators { get; set; }
+
+    /// <summary>
+    /// Капитулы
+    /// </summary>
+    public virtual DbSet<Chapter> Chapters { get; set; }
+
+    /// <summary>
+    /// Права доступа званий должностей
+    /// </summary>
+    public virtual DbSet<PositionTitleAccessRight> PositionsTitlesAccessRights { get; set; }
     #endregion
 
     #region Методы
@@ -82,8 +112,23 @@ public class UsersContext : DbContext
         //Создание ограничения уникальности на роль пользователя
         modelBuilder.Entity<UserRole>().HasAlternateKey(x => new { x.RoleId, x.UserId });
 
-        //Создание ограничения уникальности на права доступа роли
+        //Создание ограничения уникальности на право доступа роли
         modelBuilder.Entity<RoleAccessRight>().HasAlternateKey(x => new { x.AccessRightId, x.RoleId });
+
+        //Создание ограничения уникальности на псевдоним должности
+        modelBuilder.Entity<Position>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на псевдоним звания
+        modelBuilder.Entity<Title>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на звание должности
+        modelBuilder.Entity<PositionTitle>().HasAlternateKey(x => new { x.PositionId, x.TitleId });
+
+        //Создание ограничения уникальности на наименование капитула
+        modelBuilder.Entity<Chapter>().HasAlternateKey(x => x.Name);
+
+        //Создание ограничения уникальности на право доступа звания должности
+        modelBuilder.Entity<PositionTitleAccessRight>().HasAlternateKey(x => new { x.AccessRightId, x.PositionTitleId });
     }
     #endregion
 }

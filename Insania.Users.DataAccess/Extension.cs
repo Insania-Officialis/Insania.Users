@@ -22,5 +22,11 @@ public static class Extension
             .AddScoped<IPlayersDAO, PlayersDAO>() //сервис работы с данными игроков
             .AddScoped<IRolesAccessRightsDAO, RolesAccessRightsDAO>() //сервис работы с данными прав доступа ролей
             .AddScoped<IUsersRolesDAO, UsersRolesDAO>() //сервис работы с данными ролей пользователей
+            .AddScoped<IPositionsDAO, PositionsDAO>() //сервис работы с данными должностей
+            .AddScoped<ITitlesDAO, TitlesDAO>() //сервис работы с данными званий
+            .AddScoped<IPositionsTitlesDAO, PositionsTitlesDAO>() //сервис работы с данными званий должностей
+            .AddScoped<IAdministratorsDAO, AdministratorsDAO>() //сервис работы с данными администраторов
+            .AddScoped<IChaptersDAO, ChaptersDAO>() //сервис работы с данными капитулов
+            .AddScoped<IPositionsTitlesAccessRightsDAO, PositionsTitlesAccessRightsDAO>() //сервис работы с данными прав доступа званий должностей
         ;
 }

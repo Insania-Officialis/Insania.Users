@@ -112,8 +112,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             }
 
             //Накат миграций
-            await _usersContext.Database.MigrateAsync();
-            await _logsApiUsersContext.Database.MigrateAsync();
+            if (_usersContext.Database.IsRelational()) await _usersContext.Database.MigrateAsync();
+            if (_logsApiUsersContext.Database.IsRelational()) await _logsApiUsersContext.Database.MigrateAsync();
 
             //Проверки
             if (string.IsNullOrWhiteSpace(_settings.Value.ScriptsPath)) throw new Exception(ErrorMessages.EmptyScriptsPath);
@@ -173,6 +173,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         new(4, _username, true, "player", "1"),
                         new(5, _username, true, "guest", "1"),
                         new(6, _username, true, "administrator", "1"),
+                        new(7, _username, true, "for_synchronization", "1"),
+                        new(8, _username, true, "deleted_player", "1"),
+                        new(9, _username, true, "deleted_administrator", "1")
                     ];
 
                     //Проход по коллекции сущностей
@@ -199,39 +202,39 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             }
             if (_settings.Value.Tables?.AccessRights == true)
             {
-                //Открытие транзакции
-                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+                ////Открытие транзакции
+                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
 
-                try
-                {
-                    //Создание коллекции сущностей
-                    List<AccessRight> entities =
-                    [
-                        new(_transliteration, 1, _username, "Главная"),
-                        new(_transliteration, 2, _username, "Удалённая", DateTime.UtcNow)
-                    ];
+                //try
+                //{
+                //    //Создание коллекции сущностей
+                //    List<AccessRight> entities =
+                //    [
+                //        new(_transliteration, 1, _username, "Главная"),
+                //        new(_transliteration, 2, _username, "Удалённая", DateTime.UtcNow)
+                //    ];
 
-                    //Проход по коллекции сущностей
-                    foreach (var entity in entities)
-                    {
-                        //Добавление сущности в бд при её отсутствии
-                        if (!_usersContext.AccessRights.Any(x => x.Id == entity.Id)) await _usersContext.AccessRights.AddAsync(entity);
-                    }
+                //    //Проход по коллекции сущностей
+                //    foreach (var entity in entities)
+                //    {
+                //        //Добавление сущности в бд при её отсутствии
+                //        if (!_usersContext.AccessRights.Any(x => x.Id == entity.Id)) await _usersContext.AccessRights.AddAsync(entity);
+                //    }
 
-                    //Сохранение изменений в бд
-                    await _usersContext.SaveChangesAsync();
+                //    //Сохранение изменений в бд
+                //    await _usersContext.SaveChangesAsync();
 
-                    //Фиксация транзакции
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    //Откат транзакции
-                    transaction.Rollback();
+                //    //Фиксация транзакции
+                //    transaction.Commit();
+                //}
+                //catch (Exception)
+                //{
+                //    //Откат транзакции
+                //    transaction.Rollback();
 
-                    //Проброс исключения
-                    throw;
-                }
+                //    //Проброс исключения
+                //    throw;
+                //}
             }
             if (_settings.Value.Tables?.Players == true)
             {
@@ -244,7 +247,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                     string[][] keys =
                     [
                         ["1", "4", "0", ""],
-                        ["2", "4", "0", DateTime.UtcNow.ToString()]
+                        ["2", "8", "0", DateTime.UtcNow.ToString()]
                     ];
 
                     //Проход по коллекции ключей
@@ -283,54 +286,54 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             }
             if (_settings.Value.Tables?.RolesAccessRights == true)
             {
-                //Открытие транзакции
-                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+                ////Открытие транзакции
+                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
 
-                try
-                {
-                    //Создание коллекции ключей
-                    string[][] keys =
-                    [
-                        ["1", "1", "1", ""],
-                        ["2", "2", "1", ""],
-                        ["3", "3", "1", ""],
-                        ["4", "4", "2", DateTime.UtcNow.ToString()]
-                    ];
+                //try
+                //{
+                //    //Создание коллекции ключей
+                //    string[][] keys =
+                //    [
+                //        ["1", "1", "1", ""],
+                //        ["2", "2", "1", ""],
+                //        ["3", "3", "1", ""],
+                //        ["4", "4", "2", DateTime.UtcNow.ToString()]
+                //    ];
 
-                    //Проход по коллекции ключей
-                    foreach (var key in keys)
-                    {
-                        //Добавление сущности в бд при её отсутствии
-                        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
-                        {
-                            //Получение сущностей
-                            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
-                            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+                //    //Проход по коллекции ключей
+                //    foreach (var key in keys)
+                //    {
+                //        //Добавление сущности в бд при её отсутствии
+                //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
+                //        {
+                //            //Получение сущностей
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
 
-                            //Создание сущности
-                            DateTime? dateDeleted = null;
-                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
-                            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
+                //            //Создание сущности
+                //            DateTime? dateDeleted = null;
+                //            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                //            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
 
-                            //Добавление сущности в бд
-                            await _usersContext.RolesAccessRights.AddAsync(entity);
-                        }
-                    }
+                //            //Добавление сущности в бд
+                //            await _usersContext.RolesAccessRights.AddAsync(entity);
+                //        }
+                //    }
 
-                    //Сохранение изменений в бд
-                    await _usersContext.SaveChangesAsync();
+                //    //Сохранение изменений в бд
+                //    await _usersContext.SaveChangesAsync();
 
-                    //Фиксация транзакции
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    //Откат транзакции
-                    transaction.Rollback();
+                //    //Фиксация транзакции
+                //    transaction.Commit();
+                //}
+                //catch (Exception)
+                //{
+                //    //Откат транзакции
+                //    transaction.Rollback();
 
-                    //Проброс исключения
-                    throw;
-                }
+                //    //Проброс исключения
+                //    throw;
+                //}
             }
             if (_settings.Value.Tables?.UsersRoles == true)
             {
@@ -342,10 +345,10 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                     //Создание коллекции ключей
                     string[][] keys =
                     [
-                        ["1", "2", "1", DateTime.UtcNow.ToString()],
-                        ["2", "4", "2", ""],
-                        ["3", "5", "3", ""],
-                        ["4", "6", "4", ""]
+                        ["1", "4", "3", ""],
+                        ["2", "5", "1", ""],
+                        ["3", "6", "2", ""],
+                        ["4", "2", "4", DateTime.UtcNow.ToString()]
                     ];
 
                     //Проход по коллекции ключей
@@ -382,6 +385,418 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                     //Проброс исключения
                     throw;
                 }
+            }
+            if (_settings.Value.Tables?.Positions == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<Position> entities =
+                    [
+                        new(_transliteration, 1, _username, "Демиург", "Автор и создатель проекта"),
+                        new(_transliteration, 2, _username, "Магистр", "Управляющий капитулом"),
+                        new(_transliteration, 3, _username, "Комтур", "Управляющий администрацией капитула"),
+                        new(_transliteration, 4, _username, "Распорядитель", "Ответственный за приём игроков"),
+                        new(_transliteration, 5, _username, "Мейстер", "Ответственный за гражданское и политическое судейство"),
+                        new(_transliteration, 6, _username, "Маршал", "Ответственный за военное судейство"),
+                        new(_transliteration, 7, _username, "Инженер", "Ответственный за технологическое судейство"),
+                        new(_transliteration, 8, _username, "Интендант", "Ответственный за экономическое судейство"),
+                        new(_transliteration, 9, _username, "Архимаг", "Ответственный за магическое судейство"),
+                        new(_transliteration, 10, _username, "Жрец", "Ответственный за религиозное судейство"),
+                        new(_transliteration, 11, _username, "Бард", "Ответственный за культурное судейство"),
+                        new(_transliteration, 12, _username, "Глашатай", "Ответственный за ведение новостной системы"),
+                        new(_transliteration, 13, _username, "Посол", "Ответственный за рекламу и представительство"),
+                        new(_transliteration, 14, _username, "Архивариус", "Ответственный за ведение статистики и хронологии"),
+                        new(_transliteration, 15, _username, "Картограф", "Ответственный за ведение карты"),
+                        new(_transliteration, 16, _username, "Гофмалер", "Ответственный за дизайн"),
+                        new(_transliteration, 17, _username, "Механик", "Ответственный за функциональность системы"),
+                        new(_transliteration, 18, _username, "Удалённая", null, DateTime.UtcNow)
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.Positions.Any(x => x.Id == entity.Id)) await _usersContext.Positions.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Titles == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<Title> entities =
+                    [
+                        new(_transliteration, 1, _username, "Демиург", 1024),
+                        new(_transliteration, 2, _username, "Верховный", 16),
+                        new(_transliteration, 3, _username, "Главный", 8),
+                        new(_transliteration, 4, _username, "Ведущий", 4),
+                        new(_transliteration, 5, _username, "Старший", 2),
+                        new(_transliteration, 6, _username, "Младший", 1),
+                        new(_transliteration, 7, _username, "Фамилиар", 0.5),
+                        new(_transliteration, 8, _username, "Удалённое", 0, DateTime.UtcNow),
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.Titles.Any(x => x.Id == entity.Id)) await _usersContext.Titles.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.PositionsTitles == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "1", "1", ""],
+                        ["2", "2", "2", ""],
+                        ["3", "2", "3", ""],
+                        ["4", "2", "4", ""],
+                        ["5", "2", "5", ""],
+                        ["6", "2", "6", ""],
+                        ["7", "2", "7", ""],
+                        ["8", "3", "2", ""],
+                        ["9", "3", "3", ""],
+                        ["10", "3", "4", ""],
+                        ["11", "3", "5", ""],
+                        ["12", "3", "6", ""],
+                        ["13", "3", "7", ""],
+                        ["14", "4", "2", ""],
+                        ["15", "4", "3", ""],
+                        ["16", "4", "4", ""],
+                        ["17", "4", "5", ""],
+                        ["18", "4", "6", ""],
+                        ["19", "4", "7", ""],
+                        ["20", "5", "2", ""],
+                        ["21", "5", "3", ""],
+                        ["22", "5", "4", ""],
+                        ["23", "5", "5", ""],
+                        ["24", "5", "6", ""],
+                        ["25", "5", "7", ""],
+                        ["26", "6", "2", ""],
+                        ["27", "6", "3", ""],
+                        ["28", "6", "4", ""],
+                        ["29", "6", "5", ""],
+                        ["30", "6", "6", ""],
+                        ["31", "6", "7", ""],
+                        ["32", "7", "2", ""],
+                        ["33", "7", "3", ""],
+                        ["34", "7", "4", ""],
+                        ["35", "7", "5", ""],
+                        ["36", "7", "6", ""],
+                        ["37", "7", "7", ""],
+                        ["38", "8", "2", ""],
+                        ["39", "8", "3", ""],
+                        ["40", "8", "4", ""],
+                        ["41", "8", "5", ""],
+                        ["42", "8", "6", ""],
+                        ["43", "8", "7", ""],
+                        ["44", "9", "2", ""],
+                        ["45", "9", "3", ""],
+                        ["46", "9", "4", ""],
+                        ["47", "9", "5", ""],
+                        ["48", "9", "6", ""],
+                        ["49", "9", "7", ""],
+                        ["50", "10", "2", ""],
+                        ["51", "10", "3", ""],
+                        ["52", "10", "4", ""],
+                        ["53", "10", "5", ""],
+                        ["54", "10", "6", ""],
+                        ["55", "10", "7", ""],
+                        ["56", "11", "2", ""],
+                        ["57", "11", "3", ""],
+                        ["58", "11", "4", ""],
+                        ["59", "11", "5", ""],
+                        ["60", "11", "6", ""],
+                        ["61", "11", "7", ""],
+                        ["62", "12", "2", ""],
+                        ["63", "12", "3", ""],
+                        ["64", "12", "4", ""],
+                        ["65", "12", "5", ""],
+                        ["66", "12", "6", ""],
+                        ["67", "12", "7", ""],
+                        ["68", "13", "2", ""],
+                        ["69", "13", "3", ""],
+                        ["70", "13", "4", ""],
+                        ["71", "13", "5", ""],
+                        ["72", "13", "6", ""],
+                        ["73", "13", "7", ""],
+                        ["74", "14", "2", ""],
+                        ["75", "14", "3", ""],
+                        ["76", "14", "4", ""],
+                        ["77", "14", "5", ""],
+                        ["78", "14", "6", ""],
+                        ["79", "14", "7", ""],
+                        ["80", "15", "2", ""],
+                        ["81", "15", "3", ""],
+                        ["82", "15", "4", ""],
+                        ["83", "15", "5", ""],
+                        ["84", "15", "6", ""],
+                        ["85", "15", "7", ""],
+                        ["86", "16", "2", ""],
+                        ["87", "16", "3", ""],
+                        ["88", "16", "4", ""],
+                        ["89", "16", "5", ""],
+                        ["90", "16", "6", ""],
+                        ["91", "16", "7", ""],
+                        ["92", "17", "2", ""],
+                        ["93", "17", "3", ""],
+                        ["94", "17", "4", ""],
+                        ["95", "17", "5", ""],
+                        ["96", "17", "6", ""],
+                        ["97", "17", "7", ""],
+                        ["98", "18", "8", DateTime.UtcNow.ToString()],
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.PositionsTitles.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Position position = await _usersContext.Positions.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundPosition);
+                            Title title = await _usersContext.Titles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundTitle);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                            PositionTitle entity = new(long.Parse(key[0]), _username, position, title, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _usersContext.PositionsTitles.AddAsync(entity);
+                        }
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Administrators == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "6", "0", "97", ""],
+                        ["2", "9", "0", "98", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.Administrators.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundUser);
+                            PositionTitle positionTitle = await _usersContext.PositionsTitles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundPositionTitle);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[4])) dateDeleted = DateTime.Parse(key[4]);
+                            Administrator entity = new(long.Parse(key[0]), _username, true, user, int.Parse(key[2]), positionTitle, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _usersContext.Administrators.AddAsync(entity);
+                        }
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Chapters == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции родительских сущностей
+                    List<Chapter> parentEntities =
+                    [
+                        new(1, _username, true, "Генеральный капитул", null),
+                        new(24, _username, true, "Удалённый", null, DateTime.UtcNow)
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in parentEntities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.Chapters.Any(x => x.Id == entity.Id)) await _usersContext.Chapters.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Создание коллекции дочерних сущностей
+                    List<Chapter> entities =
+                    [
+                        new(2, _username, true, "Капитул Альвраатской империи", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(3, _username, true, "Капитул княжества Саорса", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(4, _username, true, "Капитул королевства Берген", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(5, _username, true, "Капитул Фесгарского княжества", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(6, _username, true, "Капитул Сверденского каганата", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(7, _username, true, "Капитул ханства Тавалин", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(8, _username, true, "Капитул княжества Саргиб", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(9, _username, true, "Капитул царства Банду", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(10, _username, true, "Капитул королевства Нордер", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(11, _username, true, "Капитул Альтерского княжества", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(12, _username, true, "Капитул Орлиадарской конфедерации", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(13, _username, true, "Капитул королевства Удстир", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(14, _username, true, "Капитул королевства Вервирунг", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(15, _username, true, "Капитул Дестинского ордена", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(16, _username, true, "Капитул вольного города Лийсет", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(17, _username, true, "Капитул Лисцийской империи", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(18, _username, true, "Капитул королевства Вальтир", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(19, _username, true, "Капитул вассального княжества Гратис", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(20, _username, true, "Капитул княжества Ректа", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(21, _username, true, "Капитул Волара", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(22, _username, true, "Капитул союза Иль-Ладро", parentEntities.FirstOrDefault(x => x.Id == 1)),
+                        new(23, _username, true, "Капитул Мергерской унии", parentEntities.FirstOrDefault(x => x.Id == 1))
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.Chapters.Any(x => x.Id == entity.Id)) await _usersContext.Chapters.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.PositionsTitlesAccessRights == true)
+            {
+                ////Открытие транзакции
+                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                //try
+                //{
+                //    //Создание коллекции ключей
+                //    string[][] keys =
+                //    [
+                //        ["1", "1", "1", ""],
+                //        ["2", "2", "1", ""],
+                //        ["3", "3", "1", ""],
+                //        ["4", "4", "2", DateTime.UtcNow.ToString()]
+                //    ];
+
+                //    //Проход по коллекции ключей
+                //    foreach (var key in keys)
+                //    {
+                //        //Добавление сущности в бд при её отсутствии
+                //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
+                //        {
+                //            //Получение сущностей
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+
+                //            //Создание сущности
+                //            DateTime? dateDeleted = null;
+                //            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                //            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
+
+                //            //Добавление сущности в бд
+                //            await _usersContext.RolesAccessRights.AddAsync(entity);
+                //        }
+                //    }
+
+                //    //Сохранение изменений в бд
+                //    await _usersContext.SaveChangesAsync();
+
+                //    //Фиксация транзакции
+                //    transaction.Commit();
+                //}
+                //catch (Exception)
+                //{
+                //    //Откат транзакции
+                //    transaction.Rollback();
+
+                //    //Проброс исключения
+                //    throw;
+                //}
             }
         }
         catch (Exception ex)

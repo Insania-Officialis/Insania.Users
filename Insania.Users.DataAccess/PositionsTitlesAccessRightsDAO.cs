@@ -9,17 +9,17 @@ using Insania.Users.Messages;
 namespace Insania.Users.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными прав доступа
+/// Сервис работы с данными прав доступа ролей
 /// </summary>
-/// <param cref="ILogger{AccessRightsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{PositionsTitlesAccessRightsDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="UsersContext" name="context">Контекст базы данных пользователей</param>
-public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext context) : IAccessRightsDAO
+public class PositionsTitlesAccessRightsDAO(ILogger<PositionsTitlesAccessRightsDAO> logger, UsersContext context) : IPositionsTitlesAccessRightsDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<AccessRightsDAO> _logger = logger;
+    private readonly ILogger<PositionsTitlesAccessRightsDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных пользователей
@@ -29,19 +29,19 @@ public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext conte
 
     #region Методы
     /// <summary>
-    /// Метод получения списка прав доступа
+    /// Метод получения списка прав доступа ролей
     /// </summary>
-    /// <returns cref="List{AccessRight}">Список прав доступа</returns>
+    /// <returns cref="List{RoleAccessRight}">Список прав доступа ролей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<AccessRight>> GetList()
+    public async Task<List<PositionTitleAccessRight>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListAccessRightsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListPositionsTitlesAccessRightsMethod);
 
             //Получение данных из бд
-            List<AccessRight> data = await _context.AccessRights.Where(x => x.DateDeleted == null).ToListAsync();
+            List<PositionTitleAccessRight> data = await _context.PositionsTitlesAccessRights.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;

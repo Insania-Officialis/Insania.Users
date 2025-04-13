@@ -9,17 +9,17 @@ using Insania.Users.Messages;
 namespace Insania.Users.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными прав доступа
+/// Сервис работы с данными званий должностей
 /// </summary>
-/// <param cref="ILogger{AccessRightsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{PositionsTitlesDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="UsersContext" name="context">Контекст базы данных пользователей</param>
-public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext context) : IAccessRightsDAO
+public class PositionsTitlesDAO(ILogger<PositionsTitlesDAO> logger, UsersContext context) : IPositionsTitlesDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<AccessRightsDAO> _logger = logger;
+    private readonly ILogger<PositionsTitlesDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных пользователей
@@ -29,19 +29,19 @@ public class AccessRightsDAO(ILogger<AccessRightsDAO> logger, UsersContext conte
 
     #region Методы
     /// <summary>
-    /// Метод получения списка прав доступа
+    /// Метод получения списка званий должностей
     /// </summary>
-    /// <returns cref="List{AccessRight}">Список прав доступа</returns>
+    /// <returns cref="List{PositionTitle}">Список званий должностей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<AccessRight>> GetList()
+    public async Task<List<PositionTitle>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListAccessRightsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListPositionsTitlesMethod);
 
             //Получение данных из бд
-            List<AccessRight> data = await _context.AccessRights.Where(x => x.DateDeleted == null).ToListAsync();
+            List<PositionTitle> data = await _context.PositionsTitles.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;
