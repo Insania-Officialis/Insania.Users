@@ -28,5 +28,7 @@ public static class Extension
             .AddScoped<IAdministratorsDAO, AdministratorsDAO>() //сервис работы с данными администраторов
             .AddScoped<IChaptersDAO, ChaptersDAO>() //сервис работы с данными капитулов
             .AddScoped<IPositionsTitlesAccessRightsDAO, PositionsTitlesAccessRightsDAO>() //сервис работы с данными прав доступа званий должностей
+            .AddScoped<IChaptersAccessRightsDAO, ChaptersAccessRightsDAO>() //сервис работы с данными прав доступа капитулов
+            .AddScoped<IChaptersAdministratorsDAO, ChaptersAdministratorsDAO>() //сервис работы с данными администраторов капитулов
         ;
 }

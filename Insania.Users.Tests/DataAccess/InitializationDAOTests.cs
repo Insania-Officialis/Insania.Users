@@ -79,6 +79,16 @@ public class InitializationDAOTests : BaseTest
     /// Сервис работы с данными прав доступа званий должностей
     /// </summary>
     private IPositionsTitlesAccessRightsDAO PositionsTitlesAccessRightsDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с данными прав доступа капитулов
+    /// </summary>
+    private IChaptersAccessRightsDAO ChaptersAccessRightsDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с данными администраторов капитулов
+    /// </summary>
+    private IChaptersAdministratorsDAO ChaptersAdministratorsDAO { get; set; }
     #endregion
 
     #region Общие методы
@@ -102,6 +112,8 @@ public class InitializationDAOTests : BaseTest
         AdministratorsDAO = ServiceProvider.GetRequiredService<IAdministratorsDAO>();
         ChaptersDAO = ServiceProvider.GetRequiredService<IChaptersDAO>();
         PositionsTitlesAccessRightsDAO = ServiceProvider.GetRequiredService<IPositionsTitlesAccessRightsDAO>();
+        ChaptersAccessRightsDAO = ServiceProvider.GetRequiredService<IChaptersAccessRightsDAO>();
+        ChaptersAdministratorsDAO = ServiceProvider.GetRequiredService<IChaptersAdministratorsDAO>();
     }
 
     /// <summary>
@@ -139,6 +151,8 @@ public class InitializationDAOTests : BaseTest
             List<Administrator> administrators = await AdministratorsDAO.GetList();
             List<Chapter> chapters = await ChaptersDAO.GetList();
             List<PositionTitleAccessRight> positionsTitlesAccessRights = await PositionsTitlesAccessRightsDAO.GetList();
+            List<ChapterAccessRight> chaptersAccessRights = await ChaptersAccessRightsDAO.GetList();
+            List<ChapterAdministrator> chaptersAdministrators = await ChaptersAdministratorsDAO.GetList();
 
             //Проверка результата
             Assert.Multiple(() =>
@@ -155,6 +169,8 @@ public class InitializationDAOTests : BaseTest
                 Assert.That(administrators, Is.Not.Empty);
                 Assert.That(chapters, Is.Not.Empty);
                 //Assert.That(positionsTitlesAccessRights, Is.Not.Empty);
+                //Assert.That(chaptersAccessRights, Is.Not.Empty);
+                Assert.That(chaptersAdministrators, Is.Not.Empty);
             });
         }
         catch (Exception)

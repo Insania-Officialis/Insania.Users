@@ -798,6 +798,106 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 //    throw;
                 //}
             }
+            if (_settings.Value.Tables?.ChaptersAccessRights == true)
+            {
+                ////Открытие транзакции
+                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                //try
+                //{
+                //    //Создание коллекции ключей
+                //    string[][] keys =
+                //    [
+                //        ["1", "1", "1", ""],
+                //        ["2", "2", "1", ""],
+                //        ["3", "3", "1", ""],
+                //        ["4", "4", "2", DateTime.UtcNow.ToString()]
+                //    ];
+
+                //    //Проход по коллекции ключей
+                //    foreach (var key in keys)
+                //    {
+                //        //Добавление сущности в бд при её отсутствии
+                //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
+                //        {
+                //            //Получение сущностей
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+
+                //            //Создание сущности
+                //            DateTime? dateDeleted = null;
+                //            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                //            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
+
+                //            //Добавление сущности в бд
+                //            await _usersContext.RolesAccessRights.AddAsync(entity);
+                //        }
+                //    }
+
+                //    //Сохранение изменений в бд
+                //    await _usersContext.SaveChangesAsync();
+
+                //    //Фиксация транзакции
+                //    transaction.Commit();
+                //}
+                //catch (Exception)
+                //{
+                //    //Откат транзакции
+                //    transaction.Rollback();
+
+                //    //Проброс исключения
+                //    throw;
+                //}
+            }
+            if (_settings.Value.Tables?.ChaptersAdministrators == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "1", "1", ""],
+                        ["2", "24", "2", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.ChaptersAdministrators.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Chapter chapter = await _usersContext.Chapters.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundChapter);
+                            Administrator administrator = await _usersContext.Administrators.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAdministrator);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                            ChapterAdministrator entity = new(long.Parse(key[0]), _username, chapter, administrator, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _usersContext.ChaptersAdministrators.AddAsync(entity);
+                        }
+                    }
+
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
         }
         catch (Exception ex)
         {

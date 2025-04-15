@@ -10,6 +10,8 @@ public static class InformationMessages
     public const string EnteredGetListAccessRightsMethod = "Вошли в метод получения списка прав доступа";
     public const string EnteredGetListAdministratorsMethod = "Вошли в метод получения списка администраторов";
     public const string EnteredGetListChaptersMethod = "Вошли в метод получения списка капитулов";
+    public const string EnteredGetListChaptersAccessRightsMethod = "Вошли в метод получения списка прав доступа капитулов";
+    public const string EnteredGetListChaptersAdministratorsMethod = "Вошли в метод получения списка администраторов капитулов";
     public const string EnteredGetListPlayersMethod = "Вошли в метод получения списка игроков";
     public const string EnteredGetListPositionsMethod = "Вошли в метод получения списка должностей";
     public const string EnteredGetListPositionsTitlesMethod = "Вошли в метод получения списка званий должностей";

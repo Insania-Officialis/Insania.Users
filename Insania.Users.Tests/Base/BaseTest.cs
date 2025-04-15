@@ -48,6 +48,8 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:Administrators", "true"},
            {"InitializationDataSettings:Tables:Chapters", "true"},
            {"InitializationDataSettings:Tables:PositionsTitlesAccessRights", "true"},
+           {"InitializationDataSettings:Tables:ChaptersAccessRights", "true"},
+           {"InitializationDataSettings:Tables:ChaptersAdministrators", "true"},
            {"TokenSettings:Issuer", "Users.Test"},
            {"TokenSettings:Audience", "Users.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},

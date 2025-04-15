@@ -93,6 +93,16 @@ public class InitializationDataSettingsIncludeTables
     /// Права доступа званий должностей
     /// </summary>
     public bool? PositionsTitlesAccessRights { get; set; }
+
+    /// <summary>
+    /// Права доступа капитулов
+    /// </summary>
+    public bool? ChaptersAccessRights { get; set; }
+
+    /// <summary>
+    /// Администраторы капитулов
+    /// </summary>
+    public bool? ChaptersAdministrators { get; set; }
 }
 
 /// <summary>

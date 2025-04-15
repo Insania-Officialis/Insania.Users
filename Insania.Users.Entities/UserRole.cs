@@ -7,7 +7,7 @@ using Insania.Shared.Entities;
 namespace Insania.Users.Entities;
 
 /// <summary>
-/// Модель сущности права доступа роли
+/// Модель сущности роли пользователя
 /// </summary>
 [Table("u_users_roles")]
 [Comment("Роли пользователей")]
@@ -15,7 +15,7 @@ public class UserRole : Entity
 {
     #region Конструкторы
     /// <summary>
-    /// Простой конструктор модели сущности права доступа роли
+    /// Простой конструктор модели сущности роли пользователя
     /// </summary>
     public UserRole() : base()
     {
@@ -24,7 +24,7 @@ public class UserRole : Entity
     }
 
     /// <summary>
-    /// Конструктор модели сущности права доступа роли без идентификатора
+    /// Конструктор модели сущности роли пользователя без идентификатора
     /// </summary>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="User" name="user">Пользователь</param>
@@ -39,7 +39,7 @@ public class UserRole : Entity
     }
 
     /// <summary>
-    /// Конструктор модели сущности права доступа роли с идентификатором
+    /// Конструктор модели сущности роли пользователя с идентификатором
     /// </summary>
     /// <param cref="long" name="id">Первичный ключ таблицы</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>

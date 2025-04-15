@@ -88,6 +88,16 @@ public class UsersContext : DbContext
     /// Права доступа званий должностей
     /// </summary>
     public virtual DbSet<PositionTitleAccessRight> PositionsTitlesAccessRights { get; set; }
+
+    /// <summary>
+    /// Права доступа капитулов
+    /// </summary>
+    public virtual DbSet<ChapterAccessRight> ChaptersAccessRights { get; set; }
+
+    /// <summary>
+    /// Администраторы капитулов
+    /// </summary>
+    public virtual DbSet<ChapterAdministrator> ChaptersAdministrators { get; set; }
     #endregion
 
     #region Методы
@@ -129,6 +139,12 @@ public class UsersContext : DbContext
 
         //Создание ограничения уникальности на право доступа звания должности
         modelBuilder.Entity<PositionTitleAccessRight>().HasAlternateKey(x => new { x.AccessRightId, x.PositionTitleId });
+
+        //Создание ограничения уникальности на право доступа капитула
+        modelBuilder.Entity<ChapterAccessRight>().HasAlternateKey(x => new { x.AccessRightId, x.ChapterId });
+
+        //Создание ограничения уникальности на администратора капитула
+        modelBuilder.Entity<ChapterAdministrator>().HasAlternateKey(x => new { x.AdministratorId, x.ChapterId });
     }
     #endregion
 }

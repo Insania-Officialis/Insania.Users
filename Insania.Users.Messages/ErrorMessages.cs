@@ -19,6 +19,8 @@ public static class ErrorMessages
     public const string IncorrectPassword = "Некорректный пароль";
     public const string NotExecutedScript = "Не выполнен скрипт";
     public const string NotFoundAccessRight = "Не найдено право доступа";
+    public const string NotFoundAdministrator = "Не найден администратор";
+    public const string NotFoundChapter = "Не найден капитул";
     public const string NotFoundPosition = "Не найдена должность";
     public const string NotFoundPositionTitle = "Не найдено звание должности";
     public const string NotFoundRole = "Не найдена роль";
