@@ -29,8 +29,8 @@ public class Title : Compendium
     /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="string" name="name">Наименование</param>
+    /// <param cref="double" name="coefficientAccrualHonorPoints">Коэффициент начисления баллов почёта</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    /// <param cref="string?" name="activityArea">Сфера деятельности</param>
     public Title(ITransliterationSL transliteration, string username, string name, double coefficientAccrualHonorPoints, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
     {
         CoefficientAccrualHonorPoints = coefficientAccrualHonorPoints;
@@ -43,8 +43,8 @@ public class Title : Compendium
     /// <param cref="long" name="id">Первичный ключ таблицы</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="string" name="name">Наименование</param>
+    /// <param cref="double" name="coefficientAccrualHonorPoints">Коэффициент начисления баллов почёта</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    /// <param cref="string?" name="activityArea">Сфера деятельности</param>
     public Title(ITransliterationSL transliteration, long id, string username, string name, double coefficientAccrualHonorPoints, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
     {
         CoefficientAccrualHonorPoints = coefficientAccrualHonorPoints;
