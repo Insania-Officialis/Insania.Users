@@ -1,4 +1,4 @@
-using System.Text;
+п»їusing System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -21,28 +21,28 @@ using Insania.Users.Middleware;
 using Insania.Users.Models.Mapper;
 using Insania.Users.Models.Settings;
 
-//Создания экземпляра постройки веб-приложения
+//РЎРѕР·РґР°РЅРёСЏ СЌРєР·РµРјРїР»СЏСЂР° РїРѕСЃС‚СЂРѕР№РєРё РІРµР±-РїСЂРёР»РѕР¶РµРЅРёСЏ
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-//Получение сервисов веб-приложения
+//РџРѕР»СѓС‡РµРЅРёРµ СЃРµСЂРІРёСЃРѕРІ РІРµР±-РїСЂРёР»РѕР¶РµРЅРёСЏ
 IServiceCollection services = builder.Services;
 
-//Получение конфигурации веб-приложения
+//РџРѕР»СѓС‡РµРЅРёРµ РєРѕРЅС„РёРіСѓСЂР°С†РёРё РІРµР±-РїСЂРёР»РѕР¶РµРЅРёСЏ
 ConfigurationManager configuration = builder.Configuration;
 
-//Введение переменных для токена
+//Р’РІРµРґРµРЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С… РґР»СЏ С‚РѕРєРµРЅР°
 var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["TokenSettings:Key"]!));
 var issuer = configuration["TokenSettings:Issuer"];
 var audience = configuration["TokenSettings:Audience"];
 
-//Добавление параметров авторизации
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ Р°РІС‚РѕСЂРёР·Р°С†РёРё
 services
     .AddAuthorizationBuilder()
     .AddPolicy("Bearer", new AuthorizationPolicyBuilder()
     .AddAuthenticationSchemes("Bearer")
     .RequireAuthenticatedUser().Build());
 
-//Добавление параметров аутентификации
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
 services
     .AddAuthentication(options => {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,48 +53,48 @@ services
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            // указывает, будет ли валидироваться издатель при валидации токена
+            // СѓРєР°Р·С‹РІР°РµС‚, Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РёР·РґР°С‚РµР»СЊ РїСЂРё РІР°Р»РёРґР°С†РёРё С‚РѕРєРµРЅР°
             ValidateIssuer = true,
-            // строка, представляющая издателя
+            // СЃС‚СЂРѕРєР°, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰Р°СЏ РёР·РґР°С‚РµР»СЏ
             ValidIssuer = issuer,
-            // будет ли валидироваться потребитель токена
+            // Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РїРѕС‚СЂРµР±РёС‚РµР»СЊ С‚РѕРєРµРЅР°
             ValidateAudience = true,
-            // установка потребителя токена
+            // СѓСЃС‚Р°РЅРѕРІРєР° РїРѕС‚СЂРµР±РёС‚РµР»СЏ С‚РѕРєРµРЅР°
             ValidAudience = audience,
-            // будет ли валидироваться время существования
+            // Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РІСЂРµРјСЏ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ
             ValidateLifetime = true,
-            // установка ключа безопасности
+            // СѓСЃС‚Р°РЅРѕРІРєР° РєР»СЋС‡Р° Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё
             IssuerSigningKey = key,
-            // валидация ключа безопасности
+            // РІР°Р»РёРґР°С†РёСЏ РєР»СЋС‡Р° Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё
             ValidateIssuerSigningKey = true,
         };
     });
 
-//Добавление параметров токенов
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ С‚РѕРєРµРЅРѕРІ
 IConfigurationSection? tokenSettings = configuration.GetSection("TokenSettings");
 services.Configure<TokenSettings>(tokenSettings);
 
-//Внедрение зависимостей сервисов
-services.AddSingleton(_ => configuration); //конфигурация
-services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
-services.AddUsersBL(); //сервисы работы с бизнес-логикой в зоне пользователей
+//Р’РЅРµРґСЂРµРЅРёРµ Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№ СЃРµСЂРІРёСЃРѕРІ
+services.AddSingleton(_ => configuration); //РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ
+services.AddScoped<ITransliterationSL, TransliterationSL>(); //СЃРµСЂРІРёСЃ С‚СЂР°РЅСЃР»РёС‚РµСЂР°С†РёРё
+services.AddUsersBL(); //СЃРµСЂРІРёСЃС‹ СЂР°Р±РѕС‚С‹ СЃ Р±РёР·РЅРµСЃ-Р»РѕРіРёРєРѕР№ РІ Р·РѕРЅРµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 
-//Добавление контекстов бд в коллекцию сервисов
+//Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРЅС‚РµРєСЃС‚РѕРІ Р±Рґ РІ РєРѕР»Р»РµРєС†РёСЋ СЃРµСЂРІРёСЃРѕРІ
 services.AddDbContext<UsersContext>(options =>
 {
     string connectionString = configuration.GetConnectionString("Users") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
     options.UseNpgsql(connectionString);
-}); //бд пользователей
+}); //Р±Рґ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 services.AddDbContext<LogsApiUsersContext>(options =>
 {
     string connectionString = configuration.GetConnectionString("LogsApiUsers") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
     options.UseNpgsql(connectionString);
-}); //бд логов api в зоне пользователей
+}); //Р±Рґ Р»РѕРіРѕРІ api РІ Р·РѕРЅРµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 
-//Установка игнорирования типов даты и времени
+//РЈСЃС‚Р°РЅРѕРІРєР° РёРіРЅРѕСЂРёСЂРѕРІР°РЅРёСЏ С‚РёРїРѕРІ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-//Добавление параметров сериализации и десериализации json
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃРµСЂРёР°Р»РёР·Р°С†РёРё Рё РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё json
 services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.PropertyNameCaseInsensitive = false;
@@ -103,7 +103,7 @@ services.Configure<JsonOptions>(options =>
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
-//Добавление параметров логирования
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
     .WriteTo.File(path: configuration["LoggingOptions:FilePath"]!, rollingInterval: RollingInterval.Day)
@@ -111,7 +111,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(Log.Logger, dispose: true));
 
-//Добавление параметров документации
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РґРѕРєСѓРјРµРЅС‚Р°С†РёРё
 services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Insania API", Version = "v1" });
@@ -121,16 +121,16 @@ services.AddSwaggerGen(options =>
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         In = ParameterLocation.Header,
-        Name = "Authentication",
-        Description = "Авторизация по ключу приложения",
+        Name = "Authorization",
+        Description = "РђРІС‚РѕСЂРёР·Р°С†РёСЏ РїРѕ РєР»СЋС‡Сѓ РїСЂРёР»РѕР¶РµРЅРёСЏ",
         Scheme = "Bearer"
     });
     options.OperationFilter<AuthenticationRequirementsOperationFilter>();
 });
 
-//Добавление корсов
+//Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕСЂСЃРѕРІ
 services.AddCors(options =>
 {
     options.AddPolicy("BadPolicy", policyBuilder => policyBuilder
@@ -143,7 +143,7 @@ services.AddCors(options =>
     options.DefaultPolicyName = "BadPolicy";
 });
 
-//Добавление контроллеров
+//Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРЅС‚СЂРѕР»Р»РµСЂРѕРІ
 services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -154,36 +154,36 @@ services
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
-//Добавление параметров преобразования моделей
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РјРѕРґРµР»РµР№
 services.AddAutoMapper(typeof(UsersMappingProfile));
 
-//Построение веб-приложения
+//РџРѕСЃС‚СЂРѕРµРЅРёРµ РІРµР±-РїСЂРёР»РѕР¶РµРЅРёСЏ
 WebApplication app = builder.Build();
 
-//Добавление параметров конвейера запросов
+//Р”РѕР±Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РєРѕРЅРІРµР№РµСЂР° Р·Р°РїСЂРѕСЃРѕРІ
 app.UseMiddleware<LoggingMiddleware>();
 
-//Подключение маршрутизации
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ РјР°СЂС€СЂСѓС‚РёР·Р°С†РёРё
 app.UseRouting();
 
-//Подключение аутентификации
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
 app.UseAuthentication();
 
-//Подключение авторизации
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ Р°РІС‚РѕСЂРёР·Р°С†РёРё
 app.UseAuthorization();
 
-//Подключение сваггера
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ СЃРІР°РіРіРµСЂР°
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Insania API V1");
 });
 
-//Подключение корсов
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ РєРѕСЂСЃРѕРІ
 app.UseCors();
 
-//Подключение маршрутизации контроллеров
+//РџРѕРґРєР»СЋС‡РµРЅРёРµ РјР°СЂС€СЂСѓС‚РёР·Р°С†РёРё РєРѕРЅС‚СЂРѕР»Р»РµСЂРѕРІ
 app.MapControllers();
 
-//Запуск веб-приложения
+//Р—Р°РїСѓСЃРє РІРµР±-РїСЂРёР»РѕР¶РµРЅРёСЏ
 app.Run();
