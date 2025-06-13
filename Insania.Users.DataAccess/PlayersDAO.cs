@@ -6,6 +6,8 @@ using Insania.Users.Database.Contexts;
 using Insania.Users.Entities;
 using Insania.Users.Messages;
 
+using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+
 namespace Insania.Users.DataAccess;
 
 /// <summary>

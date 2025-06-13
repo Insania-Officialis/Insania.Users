@@ -3,7 +3,10 @@
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Users.Contracts.BusinessLogic;
-using Insania.Users.Messages;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.Api.Controllers;
 
@@ -41,7 +44,7 @@ public class UsersController(ILogger<UsersController> logger, IUsersBL usersServ
         try
         {
             //Проверки
-            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
+            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessagesUsers.EmptyLogin);
 
             //Получение результата проверки логина
             BaseResponse? result = await _usersService.CheckLogin(login);
@@ -52,7 +55,7 @@ public class UsersController(ILogger<UsersController> logger, IUsersBL usersServ
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+            _logger.LogError("{text} {ex}", ErrorMessagesShared.Error, ex);
 
             //Возврат ошибки
             return BadRequest(new BaseResponseError(ex.Message));

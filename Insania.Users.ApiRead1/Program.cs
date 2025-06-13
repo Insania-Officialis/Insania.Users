@@ -13,11 +13,11 @@ using Serilog;
 
 using Insania.Shared.Contracts.Services;
 using Insania.Shared.Middleware;
+using Insania.Shared.Messages;
 using Insania.Shared.Services;
 
 using Insania.Users.BusinessLogic;
 using Insania.Users.Database.Contexts;
-using Insania.Users.Messages;
 using Insania.Users.Middleware;
 using Insania.Users.Models.Mapper;
 using Insania.Users.Models.Settings;

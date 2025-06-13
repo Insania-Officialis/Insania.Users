@@ -3,8 +3,11 @@
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Users.Contracts.BusinessLogic;
-using Insania.Users.Messages;
 using Insania.Users.Models.Responses;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.Api.Controllers;
 
@@ -43,8 +46,8 @@ public class AuthenticationController(ILogger<AuthenticationController> logger, 
         try
         {
             //Проверки
-            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
-            if (string.IsNullOrWhiteSpace(password)) throw new Exception(ErrorMessages.EmptyPassword);
+            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessagesUsers.EmptyLogin);
+            if (string.IsNullOrWhiteSpace(password)) throw new Exception(ErrorMessagesUsers.EmptyPassword);
 
             //Получение результата аутентификации
             AuthenticationInfo? result = await _authenticationService.Authentication(login, password);
@@ -55,7 +58,7 @@ public class AuthenticationController(ILogger<AuthenticationController> logger, 
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+            _logger.LogError("{text} {ex}", ErrorMessagesShared.Error, ex);
 
             //Возврат ошибки
             return BadRequest(new BaseResponseError(ex.Message));

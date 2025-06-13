@@ -13,6 +13,10 @@ using Insania.Users.Messages;
 using Insania.Users.Models.Responses;
 using Insania.Users.Models.Settings;
 
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
+
 namespace Insania.Users.BusinessLogic;
 
 /// <summary>
@@ -56,19 +60,19 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
             _logger.LogInformation(InformationMessages.EnteredAuthenticationMethod);
 
             //Проверки
-            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
-            if (string.IsNullOrWhiteSpace(password)) throw new Exception(ErrorMessages.EmptyPassword);
+            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessagesUsers.EmptyLogin);
+            if (string.IsNullOrWhiteSpace(password)) throw new Exception(ErrorMessagesUsers.EmptyPassword);
 
             //Формирование переменной результата
             string? result = null;
 
             //Получение пользователя по логину
-            User user = await _usersDAO.GetByLogin(login) ?? throw new Exception(ErrorMessages.NotFoundUser);
+            User user = await _usersDAO.GetByLogin(login) ?? throw new Exception(ErrorMessagesUsers.NotFoundUser);
 
             //Проверки пользователя
-            if (user.DateDeleted <= DateTime.Now) throw new Exception(ErrorMessages.DeletedUser);
-            if (user.IsBlocked == true) throw new Exception(ErrorMessages.BlockedUser);
-            if (user.Password != password) throw new Exception(ErrorMessages.IncorrectPassword);
+            if (user.DateDeleted <= DateTime.Now) throw new Exception(ErrorMessagesUsers.DeletedUser);
+            if (user.IsBlocked == true) throw new Exception(ErrorMessagesUsers.BlockedUser);
+            if (user.Password != password) throw new Exception(ErrorMessagesUsers.IncorrectPassword);
 
             //Генерация токена
             result = CreateToken(login);
@@ -79,7 +83,7 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+            _logger.LogError("{text} {ex}", ErrorMessagesShared.Error, ex);
 
             //Возврат ошибки
             throw;

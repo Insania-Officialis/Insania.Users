@@ -6,6 +6,10 @@ using Insania.Users.Database.Contexts;
 using Insania.Users.Entities;
 using Insania.Users.Messages;
 
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
+
 namespace Insania.Users.DataAccess;
 
 /// <summary>
@@ -42,7 +46,7 @@ public class UsersDAO(ILogger<UsersDAO> logger, UsersContext context) : IUsersDA
             _logger.LogInformation(InformationMessages.EnteredGetByLoginUserMethod);
 
             //Проверки
-            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
+            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessagesUsers.EmptyLogin);
 
             //Получение данных из бд
             User? data = await _context.Users.FirstOrDefaultAsync(x => x.Login == login);
@@ -53,7 +57,7 @@ public class UsersDAO(ILogger<UsersDAO> logger, UsersContext context) : IUsersDA
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;
@@ -81,7 +85,7 @@ public class UsersDAO(ILogger<UsersDAO> logger, UsersContext context) : IUsersDA
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;

@@ -1,10 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 
+using Insania.Shared.Models.Responses.Base;
+
 using Insania.Users.Contracts.BusinessLogic;
 using Insania.Users.Contracts.DataAccess;
 using Insania.Users.Entities;
 using Insania.Users.Messages;
-using Insania.Shared.Models.Responses.Base;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.BusinessLogic;
 
@@ -43,7 +48,7 @@ public class UsersBL(ILogger<UsersBL> logger, IUsersDAO usersDAO) : IUsersBL
             _logger.LogInformation(InformationMessages.EnteredGetListUsersMethod);
 
             //Проверки
-            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
+            if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessagesUsers.EmptyLogin);
 
             //Получение данных
             User? data = await _usersDAO.GetByLogin(login);
@@ -59,7 +64,7 @@ public class UsersBL(ILogger<UsersBL> logger, IUsersDAO usersDAO) : IUsersBL
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;

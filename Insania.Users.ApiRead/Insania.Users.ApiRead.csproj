@@ -4,19 +4,18 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <UserSecretsId>57091d06-4fd6-4226-9cd9-2420dbd8b122</UserSecretsId>
+    <UserSecretsId>962ac71f-61ef-4b4a-98bc-de6da3cafbf1</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Insania.Shared.Contracts" Version="1.0.3" />
     <PackageReference Include="Insania.Shared.Middleware" Version="1.0.0" />
     <PackageReference Include="Insania.Shared.Services" Version="1.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.24" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -36,5 +35,5 @@
     <ProjectReference Include="..\Insania.Users.Middleware\Insania.Users.Middleware.csproj" />
     <ProjectReference Include="..\Insania.Users.Models\Insania.Users.Models.csproj" />
   </ItemGroup>
-
+  
 </Project>

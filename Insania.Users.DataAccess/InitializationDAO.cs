@@ -16,6 +16,11 @@ using Insania.Users.Entities;
 using Insania.Users.Messages;
 using Insania.Users.Models.Settings;
 
+using InformationMessages = Insania.Shared.Messages.InformationMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
+
 namespace Insania.Users.DataAccess;
 
 /// <summary>
@@ -87,9 +92,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 if (_settings.Value.Databases?.Users == true)
                 {
                     //Формирование параметров
-                    string connectionServer = _configuration.GetConnectionString("UsersSever") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
+                    string connectionServer = _configuration.GetConnectionString("UsersSever") ?? throw new Exception(ErrorMessagesShared.EmptyConnectionString);
                     string patternDatabases = @"^databases_users_\d+\.sql$";
-                    string connectionDatabase = _configuration.GetConnectionString("UsersEmpty") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
+                    string connectionDatabase = _configuration.GetConnectionString("UsersEmpty") ?? throw new Exception(ErrorMessagesShared.EmptyConnectionString);
                     string patternSchemes = @"^schemes_users_\d+\.sql$";
 
                     //Создание базы данных
@@ -98,9 +103,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 if (_settings.Value.Databases?.LogsApiUsers == true)
                 {
                     //Формирование параметров
-                    string connectionServer = _configuration.GetConnectionString("LogsApiUsersServer") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
+                    string connectionServer = _configuration.GetConnectionString("LogsApiUsersServer") ?? throw new Exception(ErrorMessagesShared.EmptyConnectionString);
                     string patternDatabases = @"^databases_logs_api_users_\d+\.sql$";
-                    string connectionDatabase = _configuration.GetConnectionString("LogsApiUsersEmpty") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
+                    string connectionDatabase = _configuration.GetConnectionString("LogsApiUsersEmpty") ?? throw new Exception(ErrorMessagesShared.EmptyConnectionString);
                     string patternSchemes = @"^schemes_logs_api_users_\d+\.sql$";
 
                     //Создание базы данных
@@ -116,7 +121,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             if (_logsApiUsersContext.Database.IsRelational()) await _logsApiUsersContext.Database.MigrateAsync();
 
             //Проверки
-            if (string.IsNullOrWhiteSpace(_settings.Value.ScriptsPath)) throw new Exception(ErrorMessages.EmptyScriptsPath);
+            if (string.IsNullOrWhiteSpace(_settings.Value.ScriptsPath)) throw new Exception(ErrorMessagesShared.EmptyScriptsPath);
 
             //Инициализация данных в зависимости от параметров
             if (_settings.Value.Tables?.Roles == true)
@@ -257,7 +262,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         if (!_usersContext.Players.Any(x => x.Id == long.Parse(key[0])))
                         {
                             //Получение сущностей
-                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundUser);
+                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundUser);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
@@ -307,8 +312,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
                 //        {
                 //            //Получение сущностей
-                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
-                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAccessRight);
 
                 //            //Создание сущности
                 //            DateTime? dateDeleted = null;
@@ -358,8 +363,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         if (!_usersContext.UsersRoles.Any(x => x.Id == long.Parse(key[0])))
                         {
                             //Получение сущностей
-                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundUser);
-                            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundRole);
+                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundUser);
+                            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
@@ -597,8 +602,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         if (!_usersContext.PositionsTitles.Any(x => x.Id == long.Parse(key[0])))
                         {
                             //Получение сущностей
-                            Position position = await _usersContext.Positions.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundPosition);
-                            Title title = await _usersContext.Titles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundTitle);
+                            Position position = await _usersContext.Positions.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundPosition);
+                            Title title = await _usersContext.Titles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundTitle);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
@@ -646,8 +651,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         if (!_usersContext.Administrators.Any(x => x.Id == long.Parse(key[0])))
                         {
                             //Получение сущностей
-                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundUser);
-                            PositionTitle positionTitle = await _usersContext.PositionsTitles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundPositionTitle);
+                            User user = await _usersContext.Users.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundUser);
+                            PositionTitle positionTitle = await _usersContext.PositionsTitles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundPositionTitle);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
@@ -770,8 +775,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
                 //        {
                 //            //Получение сущностей
-                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
-                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAccessRight);
 
                 //            //Создание сущности
                 //            DateTime? dateDeleted = null;
@@ -821,8 +826,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                 //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
                 //        {
                 //            //Получение сущностей
-                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundRole);
-                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAccessRight);
+                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
+                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAccessRight);
 
                 //            //Создание сущности
                 //            DateTime? dateDeleted = null;
@@ -870,8 +875,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         if (!_usersContext.ChaptersAdministrators.Any(x => x.Id == long.Parse(key[0])))
                         {
                             //Получение сущностей
-                            Chapter chapter = await _usersContext.Chapters.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessages.NotFoundChapter);
-                            Administrator administrator = await _usersContext.Administrators.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessages.NotFoundAdministrator);
+                            Chapter chapter = await _usersContext.Chapters.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundChapter);
+                            Administrator administrator = await _usersContext.Administrators.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAdministrator);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
@@ -902,7 +907,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;
@@ -967,7 +972,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text} {params} из-за ошибки {ex}", ErrorMessages.NotExecutedScript, filePath, ex);
+            _logger.LogError("{text} {params} из-за ошибки {ex}", ErrorMessagesShared.NotExecutedScript, filePath, ex);
         }
     }
     #endregion

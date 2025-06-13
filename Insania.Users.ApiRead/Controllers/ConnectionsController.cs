@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Insania.Users.Messages;
+using Insania.Shared.Messages;
 
 namespace Insania.Users.Api.Controllers;
 
