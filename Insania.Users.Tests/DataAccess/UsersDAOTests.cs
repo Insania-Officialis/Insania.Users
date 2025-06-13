@@ -2,8 +2,11 @@
 
 using Insania.Users.Contracts.DataAccess;
 using Insania.Users.Entities;
-using Insania.Users.Messages;
 using Insania.Users.Tests.Base;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.Tests.DataAccess;
 
@@ -61,7 +64,7 @@ public class UsersDAOTests : BaseTest
             {
                 case "free": Assert.That(result, Is.Null); break;
                 case "test": Assert.That(result, Is.Not.Null); break;
-                default: throw new Exception(ErrorMessages.NotFoundTestCase);
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
         catch (Exception ex)
@@ -69,7 +72,7 @@ public class UsersDAOTests : BaseTest
             //Проверка исключения
             switch (login)
             {
-                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessages.EmptyLogin)); break;
+                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.EmptyLogin)); break;
                 default: throw;
             }
         }

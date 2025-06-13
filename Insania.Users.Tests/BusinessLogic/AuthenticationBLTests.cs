@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Insania.Users.Contracts.BusinessLogic;
-using Insania.Users.Messages;
 using Insania.Users.Models.Responses;
 using Insania.Users.Tests.Base;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.Tests.BusinessLogic;
 
@@ -69,7 +72,7 @@ public class AuthenticationBLTests : BaseTest
                     Assert.That(result?.Success, Is.True);
                     Assert.That(string.IsNullOrWhiteSpace(result?.Token), Is.False);
                     break;
-                default: throw new Exception(ErrorMessages.NotFoundTestCase);
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
         catch (Exception ex)
@@ -77,12 +80,12 @@ public class AuthenticationBLTests : BaseTest
             //Проверка исключения
             switch (login, password)
             {
-                case (null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.EmptyLogin)); break;
-                case ("empty", null): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.EmptyPassword)); break;
-                case ("notFound", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.NotFoundUser)); break;
-                case ("deleted", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.DeletedUser)); break;
-                case ("blocked", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.BlockedUser)); break;
-                case ("test", "2"): Assert.That(ex.Message, Is.EqualTo(ErrorMessages.IncorrectPassword)); break;
+                case (null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.EmptyLogin)); break;
+                case ("empty", null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.EmptyPassword)); break;
+                case ("notFound", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.NotFoundUser)); break;
+                case ("deleted", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.DeletedUser)); break;
+                case ("blocked", "1"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.BlockedUser)); break;
+                case ("test", "2"): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.IncorrectPassword)); break;
                 default: throw;
             }
         }

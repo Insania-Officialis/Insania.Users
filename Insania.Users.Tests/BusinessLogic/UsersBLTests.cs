@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
+using Insania.Shared.Models.Responses.Base;
+
 using Insania.Users.Contracts.BusinessLogic;
 using Insania.Users.Tests.Base;
-using Insania.Users.Messages;
-using Insania.Shared.Models.Responses.Base;
+
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesUsers = Insania.Users.Messages.ErrorMessages;
 
 namespace Insania.Users.Tests.BusinessLogic;
 
@@ -61,7 +65,7 @@ public class UsersBLTests : BaseTest
             {
                 case "free": Assert.That(result, Is.Not.Null); Assert.That(result.Success, Is.True); break;
                 case "test": Assert.That(result, Is.Not.Null); Assert.That(result.Success, Is.False); break;
-                default: throw new Exception(ErrorMessages.NotFoundTestCase);
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
         catch (Exception ex)
@@ -69,7 +73,7 @@ public class UsersBLTests : BaseTest
             //Проверка исключения
             switch (login)
             {
-                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessages.EmptyLogin)); break;
+                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesUsers.EmptyLogin)); break;
                 default: throw;
             }
         }

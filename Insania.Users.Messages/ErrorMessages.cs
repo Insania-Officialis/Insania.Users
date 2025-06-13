@@ -20,8 +20,6 @@ public static class ErrorMessages
     public const string NotFoundPosition = "Не найдена должность";
     public const string NotFoundPositionTitle = "Не найдено звание должности";
     public const string NotFoundRole = "Не найдена роль";
-    public const string NotFoundTestCase = "Не найден кейс тестирования";
     public const string NotFoundTitle = "Не найдено звание";
     public const string NotFoundUser = "Не найден пользователь";
-
 }
