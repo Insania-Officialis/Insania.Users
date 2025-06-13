@@ -2,7 +2,7 @@
 
 using Insania.Shared.Messages;
 
-namespace Insania.Users.Api.Controllers;
+namespace Insania.Users.ApiRead.Controllers;
 
 /// <summary>
 /// Контроллер работы с соединениями
