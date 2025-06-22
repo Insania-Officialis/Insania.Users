@@ -153,15 +153,13 @@ public class InitializationDAOTests : BaseTest
             List<PositionTitleAccessRight> positionsTitlesAccessRights = await PositionsTitlesAccessRightsDAO.GetList();
             List<ChapterAccessRight> chaptersAccessRights = await ChaptersAccessRightsDAO.GetList();
             List<ChapterAdministrator> chaptersAdministrators = await ChaptersAdministratorsDAO.GetList();
-
-            //Проверка результата
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(roles, Is.Not.Empty);
                 Assert.That(users, Is.Not.Empty);
-                //Assert.That(accessRights, Is.Not.Empty);
+                Assert.That(accessRights, Is.Not.Empty);
                 Assert.That(players, Is.Not.Empty);
-                //Assert.That(rolesAccessRights, Is.Not.Empty);
+                Assert.That(rolesAccessRights, Is.Not.Empty);
                 Assert.That(usersRoles, Is.Not.Empty);
                 Assert.That(positions, Is.Not.Empty);
                 Assert.That(titles, Is.Not.Empty);
@@ -171,7 +169,7 @@ public class InitializationDAOTests : BaseTest
                 //Assert.That(positionsTitlesAccessRights, Is.Not.Empty);
                 //Assert.That(chaptersAccessRights, Is.Not.Empty);
                 Assert.That(chaptersAdministrators, Is.Not.Empty);
-            });
+            }
         }
         catch (Exception)
         {

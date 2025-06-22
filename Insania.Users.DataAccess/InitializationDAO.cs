@@ -207,39 +207,57 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             }
             if (_settings.Value.Tables?.AccessRights == true)
             {
-                ////Открытие транзакции
-                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
 
-                //try
-                //{
-                //    //Создание коллекции сущностей
-                //    List<AccessRight> entities =
-                //    [
-                //        new(_transliteration, 1, _username, "Главная"),
-                //        new(_transliteration, 2, _username, "Удалённая", DateTime.UtcNow)
-                //    ];
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<AccessRight> entities =
+                    [
+                        new(_transliteration, 1, _username, "Удалённая", "",  "",DateTime.UtcNow),
+                        new(_transliteration, 2, _username, "Проверка логина", "users", "check_login"),
+                        new(_transliteration, 3, _username, "Получение списка наций по идентификатору расы", "races", "list"),
+                        new(_transliteration, 4, _username, "Получение списка рас", "nations", "list"),
+                        new(_transliteration, 5, _username, "Получение списка типов файлов", "files_types", "list"),
+                        new(_transliteration, 6, _username, "Получение списка файлов по идентификатору сущности и идентификатору типа", "files", "list"),
+                        new(_transliteration, 7, _username, "Получение файла по идентификатору", "files", "by_id"),
+                        new(_transliteration, 8, _username, "Получение списка стран", "countries", "list"),
+                        new(_transliteration, 9, _username, "Получение списка фракций", "factions", "list"),
+                        new(_transliteration, 10, _username, "Получение списка новостей", "news", "list")
+                    ];
 
-                //    //Проход по коллекции сущностей
-                //    foreach (var entity in entities)
-                //    {
-                //        //Добавление сущности в бд при её отсутствии
-                //        if (!_usersContext.AccessRights.Any(x => x.Id == entity.Id)) await _usersContext.AccessRights.AddAsync(entity);
-                //    }
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.AccessRights.Any(x => x.Id == entity.Id)) await _usersContext.AccessRights.AddAsync(entity);
+                    }
 
-                //    //Сохранение изменений в бд
-                //    await _usersContext.SaveChangesAsync();
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_access_rights_\d+.sql";
 
-                //    //Фиксация транзакции
-                //    transaction.Commit();
-                //}
-                //catch (Exception)
-                //{
-                //    //Откат транзакции
-                //    transaction.Rollback();
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _usersContext);
+                    }
 
-                //    //Проброс исключения
-                //    throw;
-                //}
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
             }
             if (_settings.Value.Tables?.Players == true)
             {
@@ -291,54 +309,88 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
             }
             if (_settings.Value.Tables?.RolesAccessRights == true)
             {
-                ////Открытие транзакции
-                //IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
+                //Открытие транзакции
+                IDbContextTransaction transaction = _usersContext.Database.BeginTransaction();
 
-                //try
-                //{
-                //    //Создание коллекции ключей
-                //    string[][] keys =
-                //    [
-                //        ["1", "1", "1", ""],
-                //        ["2", "2", "1", ""],
-                //        ["3", "3", "1", ""],
-                //        ["4", "4", "2", DateTime.UtcNow.ToString()]
-                //    ];
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "4", "1", DateTime.UtcNow.ToString()],
+                        ["2", "1", "2", ""],
+                        ["3", "1", "3", ""],
+                        ["4", "1", "4", ""],
+                        ["5", "1", "5", ""],
+                        ["6", "1", "6", ""],
+                        ["7", "1", "7", ""],
+                        ["8", "1", "8", ""],
+                        ["9", "1", "9", ""],
+                        ["10", "1", "10", ""],
+                        ["11", "2", "2", ""],
+                        ["12", "2", "3", ""],
+                        ["13", "2", "4", ""],
+                        ["14", "2", "5", ""],
+                        ["15", "2", "6", ""],
+                        ["16", "2", "7", ""],
+                        ["17", "2", "8", ""],
+                        ["18", "2", "9", ""],
+                        ["19", "2", "10", ""],
+                        ["20", "3", "2", ""],
+                        ["21", "3", "3", ""],
+                        ["22", "3", "4", ""],
+                        ["23", "3", "5", ""],
+                        ["24", "3", "6", ""],
+                        ["25", "3", "7", ""],
+                        ["26", "3", "8", ""],
+                        ["27", "3", "9", ""],
+                        ["28", "3", "10", ""]
+                    ];
 
-                //    //Проход по коллекции ключей
-                //    foreach (var key in keys)
-                //    {
-                //        //Добавление сущности в бд при её отсутствии
-                //        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
-                //        {
-                //            //Получение сущностей
-                //            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
-                //            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAccessRight);
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_usersContext.RolesAccessRights.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Role role = await _usersContext.Roles.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception(ErrorMessagesUsers.NotFoundRole);
+                            AccessRight accessRight = await _usersContext.AccessRights.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesUsers.NotFoundAccessRight);
 
-                //            //Создание сущности
-                //            DateTime? dateDeleted = null;
-                //            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
-                //            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                            RoleAccessRight entity = new(long.Parse(key[0]), _username, accessRight, role, dateDeleted);
 
-                //            //Добавление сущности в бд
-                //            await _usersContext.RolesAccessRights.AddAsync(entity);
-                //        }
-                //    }
+                            //Добавление сущности в бд
+                            await _usersContext.RolesAccessRights.AddAsync(entity);
+                        }
+                    }
 
-                //    //Сохранение изменений в бд
-                //    await _usersContext.SaveChangesAsync();
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_roles_access_rights_\d+.sql";
 
-                //    //Фиксация транзакции
-                //    transaction.Commit();
-                //}
-                //catch (Exception)
-                //{
-                //    //Откат транзакции
-                //    transaction.Rollback();
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _usersContext);
+                    }
 
-                //    //Проброс исключения
-                //    throw;
-                //}
+                    //Сохранение изменений в бд
+                    await _usersContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
             }
             if (_settings.Value.Tables?.UsersRoles == true)
             {
@@ -965,6 +1017,34 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
 
             //Выполнение команды
             await command.ExecuteNonQueryAsync();
+
+            //Логгирование
+            _logger.LogInformation("{text} {params}", InformationMessages.ExecutedScript, filePath);
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text} {params} из-за ошибки {ex}", ErrorMessagesShared.NotExecutedScript, filePath, ex);
+        }
+    }
+
+    /// <summary>
+    /// Метод выполнения скрипта с контекстом
+    /// </summary>
+    /// <param cref="string" name="filePath">Путь к скрипту</param>
+    /// <param cref="DbContext" name="context">Контекст базы данных</param>
+    private async Task ExecuteScript(string filePath, DbContext context)
+    {
+        //Логгирование
+        _logger.LogInformation("{text} {params}", InformationMessages.ExecuteScript, filePath);
+
+        try
+        {
+            //Считывание запроса
+            string sql = File.ReadAllText(filePath);
+
+            //Выполнение sql-команды
+            await context.Database.ExecuteSqlRawAsync(sql);
 
             //Логгирование
             _logger.LogInformation("{text} {params}", InformationMessages.ExecutedScript, filePath);
