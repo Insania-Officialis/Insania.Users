@@ -224,7 +224,12 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         new(_transliteration, 7, _username, "Получение файла по идентификатору", "files", "by_id"),
                         new(_transliteration, 8, _username, "Получение списка стран", "countries", "list"),
                         new(_transliteration, 9, _username, "Получение списка фракций", "factions", "list"),
-                        new(_transliteration, 10, _username, "Получение списка новостей", "news", "list")
+                        new(_transliteration, 10, _username, "Получение списка новостей", "news", "list"),
+                        new(_transliteration, 11, _username, "Получение списка географических объектов", "geography_objects", "list"),
+                        new(_transliteration, 12, _username, "Получение списка координат географических объектов", "geography_objects_coordinates", "list"),
+                        new(_transliteration, 13, _username, "Получение списка координат стран", "countries_coordinates", "list"),
+                        new(_transliteration, 14, _username, "Метод актуализации координаты географического объекта", "geography_objects_coordinates", "upgrade"),
+                        new(_transliteration, 15, _username, "Метод актуализации координаты страны", "countries_coordinates", "upgrade"),
                     ];
 
                     //Проход по коллекции сущностей
@@ -344,7 +349,18 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         ["25", "3", "7", ""],
                         ["26", "3", "8", ""],
                         ["27", "3", "9", ""],
-                        ["28", "3", "10", ""]
+                        ["28", "3", "10", ""],
+                        ["29", "1", "11", ""],
+                        ["30", "2", "11", ""],
+                        ["31", "3", "11", ""],
+                        ["32", "1", "12", ""],
+                        ["33", "2", "12", ""],
+                        ["34", "3", "12", ""],
+                        ["35", "1", "13", ""],
+                        ["36", "2", "13", ""],
+                        ["37", "3", "13", ""],
+                        ["38", "2", "14", ""],
+                        ["39", "2", "15", ""],
                     ];
 
                     //Проход по коллекции ключей
