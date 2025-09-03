@@ -10,7 +10,8 @@ public interface IUsersRolesDAO
     /// <summary>
     /// Метод получения списка ролей пользователей
     /// </summary>
+    /// <param cref="long?" name="userId">Идентификатор пользователя</param>
     /// <returns cref="List{UserRole}">Список ролей пользователей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<UserRole>> GetList();
+    Task<List<UserRole>> GetList(long? userId = null);
 }

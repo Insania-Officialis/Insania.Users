@@ -22,4 +22,5 @@ public static class ErrorMessages
     public const string NotFoundRole = "Не найдена роль";
     public const string NotFoundTitle = "Не найдено звание";
     public const string NotFoundUser = "Не найден пользователь";
+    public const string NotFoundUserRoles = "Не найдены роли пользователя";
 }

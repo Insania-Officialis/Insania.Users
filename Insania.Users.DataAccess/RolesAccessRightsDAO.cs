@@ -33,17 +33,24 @@ public class RolesAccessRightsDAO(ILogger<RolesAccessRightsDAO> logger, UsersCon
     /// <summary>
     /// Метод получения списка прав доступа ролей
     /// </summary>
+    /// <param cref="long?" name="roleId">Идентификатор роли</param>
     /// <returns cref="List{RoleAccessRight}">Список прав доступа ролей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<RoleAccessRight>> GetList()
+    public async Task<List<RoleAccessRight>> GetList(long? roleId = null)
     {
         try
         {
             //Логгирование
             _logger.LogInformation(InformationMessages.EnteredGetListRolesAccessRightsMethod);
 
+            //Формирование запроса
+            IQueryable<RoleAccessRight> query = _context.RolesAccessRights.Where(x => x.DateDeleted == null);
+
+            //Дополнение запроса, в зависимости от наличия идентификатора пользователя
+            if (roleId != null) query = query.Include(x => x.AccessRightEntity).Where(x => x.RoleId == roleId);
+
             //Получение данных из бд
-            List<RoleAccessRight> data = await _context.RolesAccessRights.Where(x => x.DateDeleted == null).ToListAsync();
+            List<RoleAccessRight> data = await query.ToListAsync();
 
             //Возврат результата
             return data;

@@ -33,17 +33,24 @@ public class UsersRolesDAO(ILogger<UsersRolesDAO> logger, UsersContext context) 
     /// <summary>
     /// Метод получения списка ролей пользователей
     /// </summary>
+    /// <param cref="long?" name="userId">Идентификатор пользователя</param>
     /// <returns cref="List{UserRole}">Список ролей пользователей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<UserRole>> GetList()
+    public async Task<List<UserRole>> GetList(long? userId = null)
     {
         try
         {
             //Логгирование
             _logger.LogInformation(InformationMessages.EnteredGetListUsersRolesMethod);
 
+            //Формирование запроса
+            IQueryable<UserRole> query = _context.UsersRoles.Where(x => x.DateDeleted == null);
+
+            //Дополнение запроса, в зависимости от наличия идентификатора пользователя
+            if (userId != null) query = query.Include(x => x.RoleEntity).Where(x => x.UserId == userId);
+
             //Получение данных из бд
-            List<UserRole> data = await _context.UsersRoles.Where(x => x.DateDeleted == null).ToListAsync();
+            List<UserRole> data = await query.ToListAsync();
 
             //Возврат результата
             return data;

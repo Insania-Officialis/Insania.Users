@@ -24,8 +24,10 @@ namespace Insania.Users.BusinessLogic;
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
 /// <param cref="IUsersDAO" name="usersDAO">Сервис работы с данными пользователей</param>
+/// <param cref="IUsersRolesDAO" name="usersRolesDAO">Сервис работы с данными ролей пользователей</param>
+/// <param cref="IRolesAccessRightsDAO" name="rolesAccessRightsDAO">Сервис работы с данными прав доступа ролей</param>
 /// <param  cref="IOptions{TokenSettings}" name="settings">Параметры токена</param>
-public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersDAO, IOptions<TokenSettings> settings) : IAuthenticationBL
+public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersDAO, IUsersRolesDAO usersRolesDAO, IRolesAccessRightsDAO rolesAccessRightsDAO, IOptions<TokenSettings> settings) : IAuthenticationBL
 {
     #region Зависимости
     /// <summary>
@@ -37,6 +39,16 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
     /// Сервис работы с данными пользователей
     /// </summary>
     public readonly IUsersDAO _usersDAO = usersDAO;
+
+    /// <summary>
+    /// Сервис работы с данными ролей пользователей
+    /// </summary>
+    public readonly IUsersRolesDAO _usersRolesDAO = usersRolesDAO;
+
+    /// <summary>
+    /// Сервис работы с данными прав доступа ролей
+    /// </summary>
+    public readonly IRolesAccessRightsDAO _rolesAccessRightsDAO = rolesAccessRightsDAO;
 
     /// <summary>
     /// Параметры токена
@@ -69,13 +81,29 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
             //Получение пользователя по логину
             User user = await _usersDAO.GetByLogin(login) ?? throw new Exception(ErrorMessagesUsers.NotFoundUser);
 
+            //Получение ролей пользователя
+            List<Role> roles = [.. (await _usersRolesDAO.GetList(user.Id) ?? throw new Exception(ErrorMessagesUsers.NotFoundUserRoles)).Select(x => x.RoleEntity)];
+
+            //Создание коллекции прав доступа
+            List<AccessRight> accessRights = [];
+
+            //Проход по ролям
+            foreach (Role role in roles)
+            {
+                //Добавление прав доступа роли в коллекцию
+                accessRights.AddRange((await _rolesAccessRightsDAO.GetList(role.Id)).Select(x => x.AccessRightEntity));
+            }
+
+            //Удаление дубликатов прав доступа
+            accessRights = [.. accessRights.Distinct()];
+
             //Проверки пользователя
             if (user.DateDeleted <= DateTime.Now) throw new Exception(ErrorMessagesUsers.DeletedUser);
             if (user.IsBlocked == true) throw new Exception(ErrorMessagesUsers.BlockedUser);
             if (user.Password != password) throw new Exception(ErrorMessagesUsers.IncorrectPassword);
 
             //Генерация токена
-            result = CreateToken(login);
+            result = CreateToken(login, roles, accessRights);
 
             //Возврат результата
             return new(true, result);
@@ -96,19 +124,37 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
     /// Метод создания токена
     /// </summary>
     /// <param cref="string" name="login">Логин</param>
+    /// <param cref="List{Role}" name="roles">Роли</param>
+    /// <param cref="List{AccessRight}" name="accessRights">Права доступа</param>
     /// <returns cref="string">Токен</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public string CreateToken(string login)
+    public string CreateToken(string login, List<Role> roles, List<AccessRight> accessRights)
     {
         //Проверки
         if (string.IsNullOrWhiteSpace(login)) throw new Exception(ErrorMessages.EmptyLogin);
 
         //Получение параметров генерации токена
-        var claims = new List<Claim> { new(ClaimTypes.Name, login) };
         if (string.IsNullOrWhiteSpace(_settings.Value.Issuer)) throw new Exception(ErrorMessages.EmptyIssuer);
         if (string.IsNullOrWhiteSpace(_settings.Value.Audience)) throw new Exception(ErrorMessages.EmptyAudience);
         if (_settings.Value.Expires == null) throw new Exception(ErrorMessages.EmptyExpires);
         if (string.IsNullOrWhiteSpace(_settings.Value.Key)) throw new Exception(ErrorMessages.EmptyKeyToken);
+
+        //Формирование информации о пользователе
+        var claims = new List<Claim> { new(ClaimTypes.Name, login) };
+
+        //Проход по ролям
+        foreach (var role in roles)
+        {
+            //Добавление ролей
+            claims.Add(new Claim(ClaimTypes.Role, role.Alias));
+        }
+
+        //Проход по правам доступа
+        foreach (var accessRight in accessRights)
+        {
+            //Добавление права доступа
+            claims.Add(new Claim("accessRight", string.Join('/', accessRight.Controller, accessRight.Action)));
+        }
 
         //Создание JWT-токена
         var jwt = new JwtSecurityToken(
