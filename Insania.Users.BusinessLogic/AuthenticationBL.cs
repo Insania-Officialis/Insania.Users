@@ -153,7 +153,7 @@ public class AuthenticationBL(ILogger<AuthenticationBL> logger, IUsersDAO usersD
         foreach (var accessRight in accessRights)
         {
             //Добавление права доступа
-            claims.Add(new Claim("accessRight", string.Join('/', accessRight.Controller, accessRight.Action)));
+            claims.Add(new Claim("accessRight", '/' + accessRight.Controller + '/' + accessRight.Action));
         }
 
         //Создание JWT-токена
