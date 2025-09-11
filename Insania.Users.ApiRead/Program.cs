@@ -141,14 +141,12 @@ services.AddSwaggerGen(options =>
 //Добавление корсов
 services.AddCors(options =>
 {
-    options.AddPolicy("BadPolicy", policyBuilder => policyBuilder
+    options.AddPolicy("CorsPolicy", policyBuilder => policyBuilder
         .SetIsOriginAllowed(origin => true)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
     );
-
-    options.DefaultPolicyName = "BadPolicy";
 });
 
 //Добавление контроллеров
@@ -165,14 +163,22 @@ services
 //Добавление параметров преобразования моделей
 services.AddAutoMapper(typeof(UsersMappingProfile));
 
+//Регистрация списка исключений авторизации
+builder.Services.AddSingleton<List<string>>(
+[
+    "/authentication/login",
+    "/connections/check",
+    "/users/check_login",
+]);
+
 //Построение веб-приложения
 WebApplication app = builder.Build();
 
-//Добавление параметров конвейера запросов
-app.UseMiddleware<LoggingMiddleware>();
-
 //Подключение маршрутизации
 app.UseRouting();
+
+//Подключение корсов
+app.UseCors("CorsPolicy");
 
 //Подключение аутентификации
 app.UseAuthentication();
@@ -180,15 +186,16 @@ app.UseAuthentication();
 //Подключение авторизации
 app.UseAuthorization();
 
+//Добавление конвееров запросов
+app.UseMiddleware<LoggingMiddleware>(); //логгирование
+app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
+
 //Подключение сваггера
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Insania API V1");
 });
-
-//Подключение корсов
-app.UseCors();
 
 //Подключение маршрутизации контроллеров
 app.MapControllers();
