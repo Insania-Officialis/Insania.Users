@@ -13,7 +13,6 @@ using Insania.Shared.Contracts.Services;
 
 using Insania.Users.Database.Contexts;
 using Insania.Users.Entities;
-using Insania.Users.Messages;
 using Insania.Users.Models.Settings;
 
 using InformationMessages = Insania.Shared.Messages.InformationMessages;
@@ -227,10 +226,11 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         new(_transliteration, 10, _username, "Получение списка новостей", "news", "list"),
                         new(_transliteration, 11, _username, "Получение списка географических объектов", "geography_objects", "list"),
                         new(_transliteration, 12, _username, "Получение списка координат географических объектов", "geography_objects_coordinates", "by_geography_object_id"),
-                        new(_transliteration, 13, _username, "Получение списка координат стран", "countries_coordinates", "list"),
+                        new(_transliteration, 13, _username, "Получение списка координат страны по идентификатору страны", "countries_coordinates", "by_country_id"),
                         new(_transliteration, 14, _username, "Метод актуализации координаты географического объекта", "geography_objects_coordinates", "upgrade"),
                         new(_transliteration, 15, _username, "Метод актуализации координаты страны", "countries_coordinates", "upgrade"),
                         new(_transliteration, 16, _username, "Получение списка географических объектов с координатами", "geography_objects", "list_with_coordinates"),
+                        new(_transliteration, 17, _username, "Получение списка стран с координатами", "countries", "list_with_coordinates"),
                     ];
 
                     //Проход по коллекции сущностей
@@ -365,6 +365,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         ["40", "1", "16", ""],
                         ["41", "2", "16", ""],
                         ["42", "3", "16", ""],
+                        ["43", "1", "17", ""],
+                        ["44", "2", "17", ""],
+                        ["45", "3", "17", ""],
                     ];
 
                     //Проход по коллекции ключей
