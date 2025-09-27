@@ -12,6 +12,7 @@ using Insania.Shared.Services;
 using Insania.Users.BusinessLogic;
 using Insania.Users.DataAccess;
 using Insania.Users.Database.Contexts;
+using Insania.Users.Models.Mapper;
 using Insania.Users.Models.Settings;
 
 namespace Insania.Users.Tests.Base;
@@ -79,6 +80,9 @@ public abstract class BaseTest
             .WriteTo.Debug()
             .CreateLogger();
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(Log.Logger, dispose: true));
+
+        //Добавление параметров преобразования моделей
+        services.AddAutoMapper(cfg => { cfg.AddProfile<UsersMappingProfile>(); });
 
         //Добавление параметров инициализации данных
         IConfigurationSection? initializationDataSettings = configuration.GetSection("InitializationDataSettings");

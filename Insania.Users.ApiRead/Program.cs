@@ -161,7 +161,7 @@ services
     });
 
 //Добавление параметров преобразования моделей
-services.AddAutoMapper(typeof(UsersMappingProfile));
+services.AddAutoMapper(cfg => { cfg.AddProfile<UsersMappingProfile>(); });
 
 //Регистрация списка исключений авторизации
 builder.Services.AddSingleton<List<string>>(
