@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
+using Insania.Shared.Messages;
 using Insania.Shared.Models.Requests.Logs;
 
-using Insania.Users.Database.Contexts;
+using Insania.Users.Contracts.Services;
 using Insania.Users.Entities;
 
 namespace Insania.Users.Middleware;
@@ -12,15 +14,23 @@ namespace Insania.Users.Middleware;
 /// <summary>
 /// Сервис логгирования конвейера запросов
 /// </summary>
-/// <param name="next">Делегат следующего метода</param>
-public class LoggingMiddleware(RequestDelegate next)
+/// <param cref="RequestDelegate" name="next">Делегат следующего метода</param>
+/// <param cref="ILogger{LoggingMiddleware}" name="logger">Сервис логгирования</param>
+public class LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger)
 {
-    #region Поля
+    #region Зависимости
     /// <summary>
     /// Делегат следующего метода
     /// </summary>
     private readonly RequestDelegate _next = next;
 
+    /// <summary>
+    /// Сервис логгирования
+    /// </summary>
+    private readonly ILogger<LoggingMiddleware> _logger = logger;
+    #endregion
+
+    #region Поля
     /// <summary>
     /// Успешные статусы
     /// </summary>
@@ -38,7 +48,7 @@ public class LoggingMiddleware(RequestDelegate next)
     /// </summary>
     /// <param name="context">Контекст запроса</param>
     /// <param name="contextDB">Контекст базы данных</param>
-    public async Task Invoke(HttpContext context, LogsApiUsersContext contextDB)
+    public async Task Invoke(HttpContext context, ILoggingSL loggingSL)
     {
         //Получение параметров запроса
         var method = context.Request.Path; //адрес запроса
@@ -47,53 +57,81 @@ public class LoggingMiddleware(RequestDelegate next)
 
         //Запись в базу данных начала выполнения
         LogApiUsers log = new("system", true, method, type, request, null);
-        contextDB.Logs.Add(log);
-        await contextDB.SaveChangesAsync();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await loggingSL.QueueLogAsync(log);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ErrorMessages.Error);
+            }
+        });
 
         //Объявление переменной ответа
         string? response = null;
 
-        //Проверка исключений
-        if (!_exceptions.Any(x => method.ToString().Contains(x)))
+        try
         {
-            //Получение оригинального потока ответа
-            var originalBodyStream = context.Response.Body;
+            //Проверка исключений
+            if (!_exceptions.Any(x => method.ToString().Contains(x)))
+            {
+                //Получение оригинального потока ответа
+                var originalBodyStream = context.Response.Body;
 
-            //Перехват тела ответа
-            using var responseBody = new MemoryStream();
-            context.Response.Body = responseBody;
-            await _next(context);
-            response = await GetResponse(context.Response);
+                //Перехват тела ответа
+                using var responseBody = new MemoryStream();
+                context.Response.Body = responseBody;
+                await _next(context);
+                response = await GetResponse(context.Response);
 
-            //Получение кода статуса
-            var statusCode = context.Response.StatusCode;
+                //Получение кода статуса
+                var statusCode = context.Response.StatusCode;
 
-            //Определение успешности ответа
-            var success = _successCodes.Any(x => x == statusCode);
+                //Определение успешности ответа
+                var success = _successCodes.Any(x => x == statusCode);
 
-            //Запись результата выполнения в лог
-            log.SetEnd(success, response, statusCode);
-            contextDB.Logs.Update(log);
-            await contextDB.SaveChangesAsync();
+                //Запись результата выполнения в лог
+                log.SetEnd(success, response, statusCode);
 
-            //Возвращение в ответ оригинального потока
-            await responseBody.CopyToAsync(originalBodyStream);
+                //Возвращение в ответ оригинального потока
+                await responseBody.CopyToAsync(originalBodyStream);
+            }
+            else
+            {
+                //Переход к следующему элементу
+                await _next(context);
+
+                //Получение кода статуса
+                var statusCode = context.Response.StatusCode;
+
+                //Определение успешности ответа
+                var success = _successCodes.Any(x => x == statusCode);
+
+                //Запись результата выполнения в лог
+                log.SetEnd(success, response, statusCode);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            //Переход к следующему элементу
-            await _next(context);
-
-            //Получение кода статуса
-            var statusCode = context.Response.StatusCode;
-
-            //Определение успешности ответа
-            var success = _successCodes.Any(x => x == statusCode);
-
-            //Запись результата выполнения в лог
-            log.SetEnd(success, response, statusCode);
-            contextDB.Logs.Update(log);
-            await contextDB.SaveChangesAsync();
+            //Логгирование ошибки
+            log.SetEnd(false, ex.Message, 500);
+        }
+        finally
+        {
+            //Запись в бд окончания выполнения
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await loggingSL.QueueLogAsync(log);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ErrorMessages.Error);
+                }
+            });
         }
     }
     #endregion
