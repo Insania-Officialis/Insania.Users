@@ -46,8 +46,8 @@ public class LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> 
     /// <summary>
     /// Метод перехватывания запросов
     /// </summary>
-    /// <param name="context">Контекст запроса</param>
-    /// <param name="contextDB">Контекст базы данных</param>
+    /// <param cref="HttpContext" name="context">Контекст запроса</param>
+    /// <param cref="ILoggingSL" name="loggingSL">Сервис логгирования в бд</param>
     public async Task Invoke(HttpContext context, ILoggingSL loggingSL)
     {
         //Получение параметров запроса
