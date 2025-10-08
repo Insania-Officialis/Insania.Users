@@ -132,7 +132,7 @@ public abstract class BaseTest
         //Проверка запуска в докере
         bool isRunningInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true" || File.Exists("/.dockerenv");
 
-        if (isRunningInDocker) return "/src/Insania.Users/Insania.Users.Database/Scripts";
+        if (isRunningInDocker) return "/src/Insania.Users.Database/Scripts";
         else return "G:\\Program\\Insania\\Insania.Users\\Insania.Users.Database\\Scripts";
     }
     #endregion
