@@ -28,6 +28,9 @@ jobs:
     - name: Сборка и запуск unit-тестов
       run: |
         cd /app
+        docker-compose run --rm insania_users_unit_tests ls -la /app
+        docker-compose run --rm insania_users_unit_tests ls -la /app/Insania.Users
+        docker-compose run --rm insania_users_unit_tests ls -la /app/Insania.Users/Insania.Users.Database
         docker-compose build insania_users_unit_tests
         if docker-compose run --rm insania_users_unit_tests; then
           echo "✅ Успешное завершение Unit-тестов"
