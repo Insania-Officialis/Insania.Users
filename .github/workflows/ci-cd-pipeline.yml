@@ -30,7 +30,7 @@ jobs:
         cd /app
         docker-compose build insania_users_unit_tests
         if docker-compose run --rm insania_users_unit_tests; then
-          echo "✅ Успешное завершение Unit-тестов"
+          echo "✅ Успешное завершение unit-тестов"
         else
           echo "❌ Не пройдены unit-тесты"
           docker-compose logs insania_users_unit_tests --tail=50
@@ -60,7 +60,7 @@ jobs:
         try {
           docker-compose run --rm insania_users_unit_tests
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Успешное завершение Unit-тестов"
+            Write-Host "✅ Успешное завершение unit-тестов"
           } else {
             throw "Tests failed with exit code: $LASTEXITCODE"
           }
