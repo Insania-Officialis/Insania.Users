@@ -75,6 +75,9 @@ jobs:
   build-linux:
     runs-on: insania-linux-server
 
+    # Ожидание завершения unit-тестов
+    needs: unit-tests-linux
+
     # Шаги выполнения задания
     steps:
     # Обновление кода
@@ -244,6 +247,9 @@ jobs:
   # Задание для сборки на windows
   build-windows:
     runs-on: insania-windows-server
+
+    # Ожидание завершения unit-тестов
+    needs: unit-tests-windows
 
     # Шаги выполнения задания
     steps:

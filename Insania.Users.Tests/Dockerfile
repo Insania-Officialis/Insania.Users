@@ -20,4 +20,4 @@ WORKDIR /src/Insania.Users.Tests
 RUN dotnet build "./Insania.Users.Tests.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 #Запуск тестов
-RUN dotnet test "./Insania.Users.Tests.csproj" -c $BUILD_CONFIGURATION --no-build --verbosity normal
+RUN dotnet test "./Insania.Users.Tests.csproj" -c $BUILD_CONFIGURATION --logger:"console;verbosity=normal"
