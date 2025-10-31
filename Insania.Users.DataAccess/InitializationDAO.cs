@@ -231,6 +231,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         new(_transliteration, 15, _username, "Метод актуализации координаты страны", "countries_coordinates", "upgrade"),
                         new(_transliteration, 16, _username, "Получение списка географических объектов с координатами", "geography_objects", "list_with_coordinates"),
                         new(_transliteration, 17, _username, "Получение списка стран с координатами", "countries", "list_with_coordinates"),
+                        new(_transliteration, 18, _username, "Получение списка рас с нациями", "races", "list_with_nations"),
                     ];
 
                     //Проход по коллекции сущностей
@@ -368,6 +369,9 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, UsersContext u
                         ["43", "1", "17", ""],
                         ["44", "2", "17", ""],
                         ["45", "3", "17", ""],
+                        ["46", "1", "18", ""],
+                        ["47", "2", "18", ""],
+                        ["48", "3", "18", ""],
                     ];
 
                     //Проход по коллекции ключей
